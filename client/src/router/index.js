@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { AuthService } from '../middleware/auth.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,9 +13,6 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
     {
@@ -36,14 +34,26 @@ const router = createRouter({
       path: '/Cart',
       name: 'Cart',
       component: () => import('../views/cart/index.vue'),
+      meta: { requiresAuth: true }, // Protected
     },
     {
       path: '/categories/:slug/products',
       name: 'CategoryProducts',
       component: () => import('../views/category/CategoryProducts.vue'),
-      props: true, // 👈 Pass slug as a prop to component
+      props: true,
     },
   ],
+})
+
+// ✅ Navigation Guard
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = AuthService.isAuthenticated()
+
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next({ name: 'Login' }) // Redirect to login if not authenticated
+  } else {
+    next() // Proceed to route
+  }
 })
 
 export default router
