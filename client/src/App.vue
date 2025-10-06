@@ -1,30 +1,18 @@
 <script setup>
 // import { RouterLink, RouterView } from 'vue-router'
+import Header from './components/layout/HeaderLayout.vue';
 </script>
 
 <template>
   <div>
-    <header>
-      <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
-        <div class="block box">
-          <nav>
-            <RouterLink to="/about" class="button is-link is-outlined">About</RouterLink>
-            <RouterLink to="/" class="button is-link is-outlined">Home</RouterLink>
-            <RouterLink to="/Todo" class="button is-link is-outlined">Task</RouterLink>
-            <RouterLink to="/Login" class="button is-link is-outlined">Login</RouterLink>
-            <RouterLink to="/SignUp" class="button is-link is-outlined">SignUp</RouterLink>
-            <RouterLink to="/Cart" class="button is-link is-outlined">Cart</RouterLink>
-          </nav>
-        </div>
-      </div>
-    </header>
+    <Header />
     <RouterView />
   </div>
 </template>
 
 <style>
 nav a.router-link-exact-active {
-  color: red;
+  font-weight: bold;
 }
 /* Dark mode overrides */
 body.dark-mode {

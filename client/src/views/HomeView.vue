@@ -1,18 +1,17 @@
 <script setup>
 // import TheWelcome from '../components/TheWelcome.vue'
 import Slider from '../components/Slider.vue'
+import CommonModal from '../components/Modals/CommonModal.vue'
 import { ref,computed } from 'vue'
 
 const isOpen = ref(false)
-const inputText = ref('')
 let firstName = ref('John')
 let lastName = ref('Doe')
+
 const fullname = computed(()=>{
   console.log('Recomputing fullname')
   return `${firstName.value} ${lastName.value}`
 })
-
-
 
 function toggleDropdown() {
   isOpen.value = !isOpen.value
@@ -31,7 +30,7 @@ function confirmAction(fullname) {
 </script>
 
 <template>
-  <section>
+  <section class="container py-3">
     <div class="box mt-2 mb-0">
       <button class="button is-primary" @click="isModalOpen = true">Open Modal</button>
       <div :class="['dropdown', { 'is-active': isOpen }]">
@@ -59,23 +58,6 @@ function confirmAction(fullname) {
         <Slider :fullname="fullname"/>
       </div>
     </div>
-    <div class="modal" :class="{ 'is-active': isModalOpen }">
-      <div class="modal-background" @click="closeModal"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Modal Title</p>
-          <button class="delete" aria-label="close" @click="closeModal"></button>
-        </header>
-        <section class="modal-card-body">
-          <div class="control is-loading">
-            <input v-model="inputText" class="input" type="text" placeholder="Loading input" />
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" @click="confirmAction(inputText)">Confirm</button>
-          <button class="button" @click="closeModal">Cancel</button>
-        </footer>
-      </div>
-    </div>
+    <CommonModal :is-modal-open="isModalOpen"  @close-modal="closeModal" @confirm-action="confirmAction" />
   </section>
 </template>

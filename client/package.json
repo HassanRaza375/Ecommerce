@@ -16,7 +16,6 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@heroicons/vue": "^2.2.0",
     "@vueuse/motion": "^3.0.3",
     "bulma": "^1.0.4",
     "pinia": "^3.0.3",
