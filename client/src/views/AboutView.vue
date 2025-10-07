@@ -1,26 +1,28 @@
 <script setup>
 import { ref } from 'vue'
-import {reactive} from 'vue'
+import { reactive } from 'vue'
+import CardBox from '@/components/CardBox.vue'
+import ScopedSlot from '@/components/ScopedSlot.vue'
 const removeNotification = ref(true)
-const attributes ={
-  id:'test_id',
-  class:'test_class',
-  style:'color:red',
+const attributes = {
+  id: 'test_id',
+  class: 'test_class',
+  style: 'color:red',
 }
-const num = reactive({value:0,names:['ali','ahmad','mushtaq'],human:true})
+const num = reactive({ value: 0, names: ['ali', 'ahmad', 'mushtaq'], human: true })
 setTimeout(() => {
-  num.value=5
+  num.value = 5
   num.names.push('new name')
-  num.human=false
-}, 2000);
+  num.human = false
+}, 2000)
 </script>
 <template>
   <div class="about">
     <h1 v-bind="attributes">This is an about page {{ num.value }}</h1>
     <ul>
-    <li v-for="(name,i) in num.names" :key="i">
-      {{ name }}
-    </li>
+      <li v-for="(name, i) in num.names" :key="i">
+        {{ name }}
+      </li>
     </ul>
     <p v-if="num.human">You are a human</p>
     <div class="my-5">
@@ -28,10 +30,25 @@ setTimeout(() => {
     </div>
     <div class="notification is-danger is-light" v-if="removeNotification">
       <button class="delete" @click="removeNotification = false"></button>
-      Primar lorem ipsum dolor sit amet, consectetur adipiscing elit lorem ipsum dolor.
-      <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla. Vestibulum
-      rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum
-      <a>felis venenatis</a> efficitur.
+      <CardBox>
+        <!-- <template v-slot:default>
+          <h2>Default slot</h2>
+        </template> -->
+        <!-- default slot -->
+        <h2>Default slot</h2>
+        <template v-slot:header>
+          <div>Named slot</div>
+        </template>
+        <template #footer>
+          <div>Shorthand slot</div>
+        </template>
+      </CardBox>
+      <!-- scoped slot -->
+      <div class="my-3">
+        <ScopedSlot v-slot="{nm,age}">
+          <h2>Scoped slot {{ nm }} {{ age }}</h2>
+        </ScopedSlot>
+      </div>
     </div>
   </div>
 </template>

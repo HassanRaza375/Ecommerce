@@ -5,8 +5,14 @@ const formValidation = (data) => {
 }
 </script>
 <template>
-  <div>
-    <LoginFrom @formValidation="formValidation" />
+  <div class="bg">
+    <div class="container">
+      <LoginFrom @formValidation="formValidation" />
+    </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.bg {
+  background-color: rebeccapurple;
+}
+</style>

@@ -54,7 +54,9 @@
             <div class="navbar-item">
               <div class="buttons">
                 <RouterLink class="button is-primary" to="/Login">Login</RouterLink>
-                <RouterLink class="button is-light" to="/SignUp"><strong>Sign up</strong></RouterLink>
+                <RouterLink class="button is-light" to="/SignUp"
+                  ><strong>Sign up</strong></RouterLink
+                >
               </div>
             </div>
           </div>
@@ -64,4 +66,9 @@
   </header>
 </template>
 
-<style scoped></style>
+<style scoped>
+header {
+  padding-bottom: 5px;
+  border-bottom: 1px solid rebeccapurple;
+}
+</style>

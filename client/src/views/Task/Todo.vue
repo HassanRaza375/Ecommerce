@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container py-3">
+    <div class="container my-5">
       <div class="columns">
         <div class="column">
           <div class="box">
@@ -18,7 +18,19 @@
                 <transition name="fade">
                   <p v-if="show">Hello World</p>
                 </transition>
-                <button class="button is-link is-outlined" @click="show = !show">Toggle</button>
+                <ButtonCommon class="button is-link is-outlined" @click="show = !show"/>
+                <!-- <button class="button is-link is-outlined" @click="show = !show">Toggle</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
+            <div class="box">
+              <div class="is-flex is-justify-content-center">
+                <img src="../../assets/logo.svg" height="100" width="100" loading="eager" alt="logo">
               </div>
             </div>
           </div>
@@ -29,6 +41,7 @@
 </template>
 
 <script setup>
+import ButtonCommon from '@/components/layout/ButtonCommon.vue';
 import { ref } from 'vue'
 const show = ref(true)
 </script>
