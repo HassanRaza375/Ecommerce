@@ -1,18 +1,54 @@
 <script setup>
 // import TheWelcome from '../components/TheWelcome.vue'
-import Slider from '../components/Slider.vue'
-import CommonModal from '../components/Modals/CommonModal.vue'
-import { ref,computed } from 'vue'
+// import Slider from '../components/Slider.vue'
+import {
+  ref,
+  computed,
+  onBeforeMount,
+  onMounted,
+  onBeforeUpdate,
+  onUpdated,
+  onBeforeUnmount,
+  defineAsyncComponent,
+} from 'vue'
 
 const isOpen = ref(false)
 let firstName = ref('John')
 let lastName = ref('Doe')
 
-const fullname = computed(()=>{
+const fullname = computed(() => {
   console.log('Recomputing fullname')
   return `${firstName.value} ${lastName.value}`
 })
-
+onBeforeMount(() => {
+  console.log('on beforemount called')
+})
+onMounted(() => {
+  console.log('on Mounted called')
+})
+onBeforeUpdate(() => {
+  console.log('on BeforeUpdated called')
+})
+onUpdated(() => {
+  console.log('on onUpdated called')
+})
+onBeforeUnmount(() => {
+  console.log('on BeforeUnmount called')
+})
+const CommonModal = defineAsyncComponent({
+  loader: () => import('../components/Modals/CommonModal.vue'),
+  loadingComponent: () => import('../components/layout/LoadingSpinner.vue'),
+  // errorComponent: () => import('./ErrorMessage.vue'),
+  delay: 200,  // wait 200ms before showing loading component
+  timeout: 5000 // fail after 5s
+})
+const Slider = defineAsyncComponent({
+  loader: () => import('../components/Slider.vue'),
+  loadingComponent: () => import('../components/layout/LoadingSpinner.vue'),
+  // errorComponent: () => import('./ErrorMessage.vue'),
+  delay: 200,  // wait 200ms before showing loading component
+  timeout: 5000 // fail after 5s
+})
 function toggleDropdown() {
   isOpen.value = !isOpen.value
 }
@@ -54,10 +90,15 @@ function confirmAction(fullname) {
     </div>
     <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
       <div class="box mt-2">
-        <h1 class="title">{{fullname}}</h1>
-        <Slider :fullname="fullname"/>
+        <h1 class="title">{{ fullname }}</h1>
+        <Slider :fullname="fullname" />
       </div>
     </div>
-    <CommonModal :is-modal-open="isModalOpen"  @close-modal="closeModal" @confirm-action="confirmAction" />
+    <CommonModal
+      v-if="isModalOpen"
+      :is-modal-open="isModalOpen"
+      @close-modal="closeModal"
+      @confirm-action="confirmAction"
+    />
   </section>
 </template>
