@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/Todo',
       name: 'Todo',
-      component: () => import('../views/Task/Todo.vue'),
+      component: () => import('../views/Task/TodoTasks.vue'),
     },
     {
       path: '/Login',
@@ -34,6 +34,18 @@ const router = createRouter({
       path: '/Cart',
       name: 'Cart',
       component: () => import('../views/cart/index.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
+      path: '/Localization',
+      name: 'Localization',
+      component: () => import('../views/LocalizationView.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
+      path: '/DynmaicComponent',
+      name: 'DynmaicComponent',
+      component: () => import('../views/dynamicComponent.vue'),
       meta: { requiresAuth: true }, // Protected
     },
     {

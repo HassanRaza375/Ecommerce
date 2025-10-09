@@ -11,6 +11,7 @@ import {
   onBeforeUnmount,
   defineAsyncComponent,
 } from 'vue'
+import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
 
 const isOpen = ref(false)
 let firstName = ref('John')
@@ -37,17 +38,17 @@ onBeforeUnmount(() => {
 })
 const CommonModal = defineAsyncComponent({
   loader: () => import('../components/Modals/CommonModal.vue'),
-  loadingComponent: () => import('../components/layout/LoadingSpinner.vue'),
+  loadingComponent:  LoadingSpinner,
   // errorComponent: () => import('./ErrorMessage.vue'),
-  delay: 200,  // wait 200ms before showing loading component
-  timeout: 5000 // fail after 5s
+  delay: 200, // wait 200ms before showing loading component
+  timeout: 5000, // fail after 5s
 })
 const Slider = defineAsyncComponent({
   loader: () => import('../components/Slider.vue'),
-  loadingComponent: () => import('../components/layout/LoadingSpinner.vue'),
+  loadingComponent:  LoadingSpinner,
   // errorComponent: () => import('./ErrorMessage.vue'),
-  delay: 200,  // wait 200ms before showing loading component
-  timeout: 5000 // fail after 5s
+  delay: 200, // wait 200ms before showing loading component
+  timeout: 5000, // fail after 5s
 })
 function toggleDropdown() {
   isOpen.value = !isOpen.value

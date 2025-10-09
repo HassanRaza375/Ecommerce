@@ -1,10 +1,20 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
+const links = ref([
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
+  { name: 'Cart', path: '/cart' },
+  { name: 'Task', path: '/Task' },
+  { name: 'Localization', path: '/Localization' },
+  { name: 'DynmaicComponent', path: '/DynmaicComponent' },
+])
+</script>
 <template>
   <header>
     <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <a class="navbar-item" href="https://bulma.io">
+          <a class="navbar-item" to="/">
             <svg
               width="640"
               height="160"
@@ -44,10 +54,7 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
-            <RouterLink class="navbar-item" to="/about">About</RouterLink>
-            <RouterLink class="navbar-item" to="/">Home</RouterLink>
-            <RouterLink class="navbar-item" to="/Todo">Task</RouterLink>
-            <RouterLink class="navbar-item" to="/Cart">Cart</RouterLink>
+            <RouterLink v-for="(item,i) in links" class="navbar-item" :to="item.path" :key="i">{{ item.name }}</RouterLink>
           </div>
 
           <div class="navbar-end">
