@@ -7,6 +7,7 @@ import  i18n  from './plugins/i18n'
 
 import App from './App.vue'
 import router from './router'
+import 'primeicons/primeicons.css'
 import 'bulma/css/bulma.css'
 const app = createApp(App)
 

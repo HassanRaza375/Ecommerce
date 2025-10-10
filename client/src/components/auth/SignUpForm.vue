@@ -1,12 +1,34 @@
 <script setup>
-import { ref } from 'vue'
-const showPassword = ref(true)
+import { reactive, ref } from 'vue'
+import { register } from '../../services/authService'
+import { useCommonStore } from '../../stores/common'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const store = useCommonStore()
+const formData = reactive({ name: '', email: '', password: '' })
+const showPassword = ref(false)
 const isloading = ref(false)
-const sumbitForm = () => {
+const sumbitForm = async () => {
   isloading.value = true
-  setTimeout(() => {
+  const obj = {
+    name: formData.name,
+    email: formData.email,
+    password: formData.password,
+  }
+  try {
+    const { data } = await register(obj)
     isloading.value = false
-  }, 2000)
+    formData.name = ''
+    formData.email = ''
+    formData.password = ''
+    store.Login(data.token)
+    localStorage.setItem('user', JSON.stringify(data?.user))
+    localStorage.setItem('userId', data?.user?.id)
+    router.push('/dashboard/users')
+  } catch (err) {
+    isloading.value = false
+    alert(err.message)
+  }
 }
 </script>
 <template>
@@ -16,11 +38,11 @@ const sumbitForm = () => {
         <h1 class="title has-text-centered">Sign Up</h1>
       </div>
       <div class="mb-2">
-        <input class="input" type="text" placeholder="Name" />
+        <input v-model="formData.name" class="input" type="text" placeholder="Name" />
       </div>
       <div class="field mb-2">
         <p class="control has-icons-left has-icons-right">
-          <input class="input" type="email" placeholder="Email" />
+          <input v-model="formData.email" class="input" type="email" placeholder="Email" />
           <span class="icon is-small is-left">
             <i class="icon-svg is-flex">
               <svg
@@ -43,7 +65,12 @@ const sumbitForm = () => {
       </div>
       <div class="field mb-2">
         <p class="control has-icons-left has-icons-right">
-          <input class="input" :type="showPassword ? 'text' : 'password'" placeholder="Password" />
+          <input
+            v-model="formData.password"
+            class="input"
+            :type="showPassword ? 'password' : 'text'"
+            placeholder="Password"
+          />
           <span class="icon is-small is-left" @click="showPassword = !showPassword">
             <i class="icon-svg is-flex">
               <svg
@@ -105,8 +132,13 @@ const sumbitForm = () => {
         </p>
       </div>
       <div class="is-flex is-justify-content-center is-gap-2">
-        <button :class="isloading === true ? 'is-loading button is-primary' : 'button is-primary'" @click="sumbitForm">Sign In</button>
-        <button class="button is-info">Go Back</button>
+        <button
+          :class="isloading === true ? 'is-loading button is-primary' : 'button is-primary'"
+          @click="sumbitForm"
+        >
+          Sign In
+        </button>
+        <button class="button is-info" @click="router.push('/')">Go Back</button>
       </div>
     </div>
   </div>

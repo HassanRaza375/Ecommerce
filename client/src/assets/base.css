@@ -2,3 +2,6 @@
 body {
   min-height: 100vh;
 }
+.pointer {
+  cursor: pointer;
+}

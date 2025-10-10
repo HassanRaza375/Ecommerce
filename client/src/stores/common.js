@@ -1,9 +1,8 @@
 // src/store/cart.js
 import { defineStore } from 'pinia'
-
 export const useCommonStore = defineStore('common', {
   state: () => ({
-    isLoggedIn: false,
+    isLoggedIn: localStorage.getItem('token') ? true : false,
   }),
   actions: {
     async Login(token) {
@@ -13,6 +12,8 @@ export const useCommonStore = defineStore('common', {
     async LogOut() {
       this.isLoggedIn = false
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      localStorage.removeItem('userId')
     },
   },
 })

@@ -1,13 +1,30 @@
 <script setup>
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
+import { login } from '../../services/authService'
+import { useCommonStore } from '../../stores/common'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const store = useCommonStore()
 const showPassword = ref(false)
 const isloading = ref(false)
-const formData = ref({})
-const sumbitForm = () => {
+const formData = reactive({})
+const sumbitForm = async () => {
   isloading.value = true
-  setTimeout(() => {
+  const obj = {
+    email: formData.name,
+    password: formData.password,
+  }
+  try {
+    const { data } = await login(obj)
     isloading.value = false
-  }, 2000)
+    store.Login(data.token)
+    localStorage.setItem('user', JSON.stringify(data?.user))
+    localStorage.setItem('userId', data?.user?.id)
+    router.push('/dashboard/users')
+  } catch (err) {
+    isloading.value = false
+    alert(err.message)
+  }
 }
 const emit = defineEmits(['formValidation'])
 </script>
@@ -116,7 +133,7 @@ const emit = defineEmits(['formValidation'])
           >
             Login
           </button>
-          <button class="button is-info">Go Back</button>
+          <button class="button is-info" @click="router.push('/')">Go Back</button>
         </div>
       </form>
     </div>

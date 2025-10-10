@@ -1,13 +1,21 @@
 <script setup>
 import { ref } from 'vue'
+import { useCommonStore } from '../../stores/common'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const store = useCommonStore()
 const links = ref([
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
   { name: 'Cart', path: '/cart' },
-  { name: 'Task', path: '/Task' },
+  { name: 'Task', path: '/Todo' },
   { name: 'Localization', path: '/Localization' },
   { name: 'DynmaicComponent', path: '/DynmaicComponent' },
 ])
+const Logout = () => {
+  store.LogOut()
+  router.push('/Login')
+}
 </script>
 <template>
   <header>
@@ -54,16 +62,21 @@ const links = ref([
 
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
-            <RouterLink v-for="(item,i) in links" class="navbar-item" :to="item.path" :key="i">{{ item.name }}</RouterLink>
+            <RouterLink v-for="(item, i) in links" class="navbar-item" :to="item.path" :key="i">{{
+              item.name
+            }}</RouterLink>
           </div>
 
           <div class="navbar-end">
             <div class="navbar-item">
-              <div class="buttons">
+              <div class="buttons" v-if="!store.isLoggedIn">
                 <RouterLink class="button is-primary" to="/Login">Login</RouterLink>
                 <RouterLink class="button is-light" to="/SignUp"
                   ><strong>Sign up</strong></RouterLink
                 >
+              </div>
+              <div class="buttons" v-else>
+                <button class="button is-primary" @click="Logout">Logout</button>
               </div>
             </div>
           </div>

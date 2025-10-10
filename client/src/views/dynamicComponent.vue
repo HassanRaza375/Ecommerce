@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 import tabOne from '@/components/tabs/tabOne.vue'
 import tabTwo from '@/components/tabs/tabTwo.vue'
 import tabThree from '@/components/tabs/tabThree.vue'
 const selectTab = ref('One')
-const tabs = ref({
+const tabs = shallowRef({
   One: tabOne,
   Two: tabTwo,
   Three: tabThree,

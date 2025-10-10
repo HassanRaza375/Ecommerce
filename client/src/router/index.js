@@ -54,6 +54,12 @@ const router = createRouter({
       component: () => import('../views/category/CategoryProducts.vue'),
       props: true,
     },
+    {
+      path: '/dashboard/users',
+      name: 'Users',
+      component: () => import('../views/dashboard/allUsers.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
   ],
 })
 
