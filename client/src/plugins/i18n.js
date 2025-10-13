@@ -8,12 +8,16 @@ const messages = {
     hello: 'Hello {name}!',
     cancel: 'Cancel',
     confirm: 'Confirm',
+    profile: 'Profile',
+    logout: 'Logout',
   },
   fr: {
     welcome: 'Bienvenue',
     hello: 'Bonjour {name} !',
     cancel: 'Annuler',
     confirm: 'Confirmer',
+    profile: 'Profil',
+    logout: 'Se déconnecter',
   },
 }
 

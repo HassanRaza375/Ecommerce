@@ -1,13 +1,27 @@
 <script setup>
 import moment from 'moment'
 import { onMounted, ref } from 'vue'
-import { allusers } from '../../services/authService'
-
-const users = ref([{}])
+import { allusers, deleteById } from '../../services/authService'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const users = ref([])
 onMounted(async () => {
-  const { data } = await allusers()
-  users.value = data.count > 0 ? data.rows : [{}]
+  await getUsers()
 })
+const goToProfile = (id) => {
+  router.push(`/dashboard/profile/${id}`)
+}
+const getUsers = async () => {
+  const { data } = await allusers()
+  users.value = data.count > 0 ? data.rows : []
+}
+const deleteUser = async (userId) => {
+  const { data } = await deleteById(userId)
+  if (data.message === 'user deleted') {
+    alert('Account Deleted Successfully')
+    await getUsers()
+  }
+}
 </script>
 <template>
   <div>
@@ -31,7 +45,10 @@ onMounted(async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(user, i) in users" :key="i">
+              <tr v-if="users.length < 1">
+                <td colspan="100%" align="center"><b>No Record Found</b></td>
+              </tr>
+              <tr v-else v-for="(user, i) in users" :key="i">
                 <td>{{ ++i }}</td>
                 <td>{{ user.name || '-' }}</td>
                 <td>{{ user.email || '-' }}</td>
@@ -40,10 +57,16 @@ onMounted(async () => {
                 <td>
                   <div class="is-flex is-gap-2">
                     <div>
-                      <i class="pi pi-trash has-text-danger pointer"></i>
+                      <i
+                        class="pi pi-trash has-text-danger pointer"
+                        @click="deleteUser(user.id)"
+                      ></i>
                     </div>
                     <div>
-                      <i class="pi pi-user-edit has-text-primary pointer"></i>
+                      <i
+                        class="pi pi-user-edit has-text-primary pointer"
+                        @click="goToProfile(user.id)"
+                      ></i>
                     </div>
                   </div>
                 </td>

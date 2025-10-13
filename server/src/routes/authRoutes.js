@@ -1,11 +1,21 @@
 // src/routes/authRoutes.js
 const express = require("express");
-const { register, login, AllUsers } = require("../controllers/authController");
+const {
+  register,
+  login,
+  AllUsers,
+  getUser,
+  ChangePassword,
+  DeleteAccount,
+} = require("../controllers/authController");
 
 const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
 router.get("/allusers", AllUsers);
+router.get("/user/:id", getUser);
+router.post("/changePassword/:id", ChangePassword);
+router.delete("/deleteAccount/:id", DeleteAccount);
 
 module.exports = router;

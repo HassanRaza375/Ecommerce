@@ -26,6 +26,12 @@ const router = createRouter({
       component: () => import('../views/user/auth/LoginAuth.vue'),
     },
     {
+      path: '/ForgotPassword/:id?',
+      name: 'ForgotPassword',
+      component: () => import('../views/user/auth/ForgotPassword.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/SignUp',
       name: 'SignUp',
       component: () => import('../views/user/auth/SignupAuth.vue'),
@@ -58,6 +64,24 @@ const router = createRouter({
       path: '/dashboard/users',
       name: 'Users',
       component: () => import('../views/dashboard/allUsers.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
+      path: '/dashboard/profile/:id?',
+      name: 'profile',
+      component: () => import('../views/dashboard/profileUser.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
+      path: '/dashboard/addressBook/:id?',
+      name: 'AddressBook',
+      component: () => import('../views/dashboard/adressBook.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
+      path: '/dashboard/wishList/:id?',
+      name: 'wishList',
+      component: () => import('../views/dashboard/wishList.vue'),
       meta: { requiresAuth: true }, // Protected
     },
   ],

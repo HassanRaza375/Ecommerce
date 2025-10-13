@@ -1,9 +1,15 @@
 <script setup>
 import { ref } from 'vue'
 import { useCommonStore } from '../../stores/common'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+const { t, locale } = useI18n()
+
 const router = useRouter()
 const store = useCommonStore()
+const isOpen = ref(false)
+const currentLang = ref(locale.value)
+const userId = JSON.parse(localStorage.getItem('userId'))
 const links = ref([
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
@@ -15,6 +21,12 @@ const links = ref([
 const Logout = () => {
   store.LogOut()
   router.push('/Login')
+}
+function toggleDropdown() {
+  isOpen.value = !isOpen.value
+}
+const changeLanguage = () => {
+  locale.value = currentLang.value
 }
 </script>
 <template>
@@ -69,6 +81,19 @@ const Logout = () => {
 
           <div class="navbar-end">
             <div class="navbar-item">
+              <div class="field mb-0">
+                <p class="control has-icons-left">
+                  <span class="select">
+                    <select v-model="currentLang" @change="changeLanguage">
+                      <option value="en">English</option>
+                      <option value="fr">Français</option>
+                    </select>
+                  </span>
+                  <span class="icon is-small is-left">
+                    <i class="pi pi-globe"></i>
+                  </span>
+                </p>
+              </div>
               <div class="buttons" v-if="!store.isLoggedIn">
                 <RouterLink class="button is-primary" to="/Login">Login</RouterLink>
                 <RouterLink class="button is-light" to="/SignUp"
@@ -76,7 +101,46 @@ const Logout = () => {
                 >
               </div>
               <div class="buttons" v-else>
-                <button class="button is-primary" @click="Logout">Logout</button>
+                <div :class="['dropdown', { 'is-active': isOpen }]">
+                  <div class="dropdown-trigger">
+                    <button class="button is-primary has-text-white" @click="toggleDropdown">
+                      <span class="is-flex is-align-items-center"
+                        ><i class="pi pi-database mr-2"></i> Dashboard</span
+                      >
+                    </button>
+                  </div>
+                  <div class="dropdown-menu">
+                    <div class="dropdown-content">
+                      <RouterLink
+                        class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
+                        :to="`/dashboard/wishList/${userId}`"
+                        ><i class="pi pi-list-check"></i>WishList</RouterLink
+                      >
+                      <RouterLink
+                        class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
+                        :to="`/dashboard/addressBook/${userId}`"
+                        ><i class="pi pi-building-columns"></i>Address Book</RouterLink
+                      >
+                      <RouterLink
+                        class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
+                        to="/dashboard/users"
+                        ><i class="pi pi-users"></i>All Users</RouterLink
+                      >
+                      <RouterLink
+                        class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
+                        to="/dashboard/profile"
+                        ><i class="pi pi-user"></i> {{ t('profile') }}</RouterLink
+                      >
+                      <hr class="dropdown-divider" />
+                      <a
+                        class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
+                        @click="Logout"
+                        ><i class="pi pi-spin pi-cog" style="font-size: 1rem"></i>
+                        {{ t('logout') }}</a
+                      >
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -90,5 +154,13 @@ const Logout = () => {
 header {
   padding-bottom: 5px;
   border-bottom: 1px solid rebeccapurple;
+}
+header {
+  position: relative;
+  z-index: 2000;
+}
+.dropdown-menu {
+  position: absolute;
+  z-index: 1000;
 }
 </style>

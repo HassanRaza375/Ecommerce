@@ -20,7 +20,7 @@ const sumbitForm = async () => {
     store.Login(data.token)
     localStorage.setItem('user', JSON.stringify(data?.user))
     localStorage.setItem('userId', data?.user?.id)
-    router.push('/dashboard/users')
+    router.push('/dashboard/profile')
   } catch (err) {
     isloading.value = false
     alert(err.message)
