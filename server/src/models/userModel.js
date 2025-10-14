@@ -34,6 +34,27 @@ const deleteUserById = async (id) => {
   const result = await pool.query("DELETE FROM users where id = $1", [id]);
   return result;
 };
+const getUserAddressesById = async (id) => {
+  const result = await pool.query(
+    `
+    SELECT users.*, addresses.*
+    FROM users
+    LEFT JOIN addresses ON users.id = addresses.user_id
+    WHERE users.id = $1
+  `,
+    [id]
+  );
+  return result.rows;
+};
+
+const getUserAddresses = async () => {
+  const result = await pool.query(`
+    SELECT users.*, addresses.*
+    FROM users
+    RIGHT JOIN addresses ON users.id = addresses.user_id
+  `);
+  return result.rows;
+};
 
 module.exports = {
   createUser,
@@ -42,4 +63,6 @@ module.exports = {
   getUserById,
   changeUserPasswordById,
   deleteUserById,
+  getUserAddressesById,
+  getUserAddresses,
 };

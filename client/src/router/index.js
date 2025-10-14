@@ -79,6 +79,12 @@ const router = createRouter({
       meta: { requiresAuth: true }, // Protected
     },
     {
+      path: '/dashboard/add/address/:id?',
+      name: 'Add Addresses',
+      component: () => import('../views/dashboard/addAddresses.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
       path: '/dashboard/wishList/:id?',
       name: 'wishList',
       component: () => import('../views/dashboard/wishList.vue'),

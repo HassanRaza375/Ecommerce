@@ -6,4 +6,7 @@ export const ChangePassword = (id, data) => api.post(`/auth/changePassword/${id}
 export const logout = () => api.post('/auth/logout')
 export const allusers = () => api.get('/auth/allusers')
 export const userById = (id) => api.get(`/auth/user/${id}`)
+export const getAllUsersAdresses = () => api.get(`/auth/usersAddresses/`)
+export const getUsersAdressesById = (id) => api.get(`/auth/usersAddresses/${id}`)
 export const deleteById = (id) => api.delete(`/auth/deleteAccount/${id}`)
+export const deleteAddressById = (id) => api.delete(`/auth/usersAddresses/${id}`)

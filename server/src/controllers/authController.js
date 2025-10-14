@@ -8,6 +8,8 @@ const {
   getUserById,
   changeUserPasswordById,
   deleteUserById,
+  getUserAddressesById,
+  getUserAddresses,
 } = require("../models/userModel");
 
 const register = async (req, res) => {
@@ -116,6 +118,25 @@ const DeleteAccount = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const getAllUsersAdresses = async (req, res) => {
+  try {
+    const addresses = await getUserAddresses();
+    res.json({ message: "Addresses Fetched", addresses });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const getUsersAdressesById = async (req, res) => {
+  try {
+    const user = await getUserById(req.params.id);
+    if (user.rows.length === 0)
+      return res.status(404).json({ message: "user not found" });
+    const addresses = await getUserAddressesById(req.params.id);
+    res.json({ message: "Addresses Fetched", addresses });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 module.exports = {
   register,
@@ -124,4 +145,6 @@ module.exports = {
   getUser,
   ChangePassword,
   DeleteAccount,
+  getAllUsersAdresses,
+  getUsersAdressesById,
 };

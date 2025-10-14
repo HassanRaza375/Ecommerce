@@ -7,6 +7,8 @@ const {
   getUser,
   ChangePassword,
   DeleteAccount,
+  getAllUsersAdresses,
+  getUsersAdressesById,
 } = require("../controllers/authController");
 
 const router = express.Router();
@@ -17,5 +19,7 @@ router.get("/allusers", AllUsers);
 router.get("/user/:id", getUser);
 router.post("/changePassword/:id", ChangePassword);
 router.delete("/deleteAccount/:id", DeleteAccount);
+router.get("/usersAddresses/", getAllUsersAdresses);
+router.get("/usersAddresses/:id", getUsersAdressesById);
 
 module.exports = router;

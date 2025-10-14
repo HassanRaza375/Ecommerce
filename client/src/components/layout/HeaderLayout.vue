@@ -9,7 +9,7 @@ const router = useRouter()
 const store = useCommonStore()
 const isOpen = ref(false)
 const currentLang = ref(locale.value)
-const userId = JSON.parse(localStorage.getItem('userId'))
+const userId = JSON.parse(localStorage.getItem('userId')) || ''
 const links = ref([
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
