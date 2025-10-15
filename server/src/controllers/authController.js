@@ -10,6 +10,8 @@ const {
   deleteUserById,
   getUserAddressesById,
   getUserAddresses,
+  deleteAddressById,
+  editUserAddressesById,
 } = require("../models/userModel");
 
 const register = async (req, res) => {
@@ -137,7 +139,55 @@ const getUsersAdressesById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const DeleteAdressesById = async (req, res) => {
+  try {
+    const address = await getUserAddressesById(req.params.id);
+    if (address.rows.length === 0)
+      return res.status(404).json({ message: "user not found" });
+    const deladdress = await deleteAddressById(req.params.id);
+    res.json({ message: "Address deleted", deladdress });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const UpdateAdressesById = async (req, res) => {
+  try {
+    const {
+      full_name,
+      phone,
+      address_line1,
+      address_line2,
+      city,
+      state,
+      postal_code,
+      is_default,
+    } = req.body;
 
+    // Only include non-null/defined fields
+    const fields = {};
+    if (full_name !== undefined) fields.full_name = full_name;
+    if (phone !== undefined) fields.phone = phone;
+    if (address_line1 !== undefined) fields.address_line1 = address_line1;
+    if (address_line2 !== undefined) fields.address_line2 = address_line2;
+    if (city !== undefined) fields.city = city;
+    if (state !== undefined) fields.state = state;
+    if (postal_code !== undefined) fields.postal_code = postal_code;
+    if (is_default !== undefined) fields.is_default = is_default;
+
+    const updatedAddress = await editUserAddressesById(req.params.id, fields);
+
+    if (!updatedAddress) {
+      return res.status(404).json({ message: "Address not found" });
+    }
+
+    res.json({
+      message: "Address updated successfully",
+      data: updatedAddress,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   register,
   login,
@@ -147,4 +197,6 @@ module.exports = {
   DeleteAccount,
   getAllUsersAdresses,
   getUsersAdressesById,
+  DeleteAdressesById,
+  UpdateAdressesById,
 };
