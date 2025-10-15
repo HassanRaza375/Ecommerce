@@ -3,7 +3,10 @@
     <div class="box">
       <div class="is-flex is-align-center is-justify-content-space-between">
         <h1 class="title mb-0">Addresses</h1>
-        <button class="button is-primary has-text-white is-flex is-align-center">
+        <button
+          class="button is-primary has-text-white is-flex is-align-center"
+          @click="goToUrl(null, 'add')"
+        >
           <i class="pi pi-plus mr-2"></i> Add Address
         </button>
       </div>
@@ -37,16 +40,16 @@
                 <td>{{ moment(user?.created_at).format('DD MMM YY') || '-' }}</td>
                 <td>
                   <div class="is-flex is-gap-2">
-                    <div>
+                    <!-- <div>
                       <i
                         class="pi pi-trash has-text-danger pointer"
                         @click="deleteAddress(user.id)"
                       ></i>
-                    </div>
+                    </div> -->
                     <div>
                       <i
                         class="pi pi-user-edit has-text-primary pointer"
-                        @click="goToUrl(user.id)"
+                        @click="goToUrl(user.user_id, 'edit')"
                       ></i>
                     </div>
                   </div>
@@ -63,27 +66,30 @@
 <script setup>
 import moment from 'moment'
 import { onMounted, ref } from 'vue'
-import { getAllUsersAdresses, deleteAddressById } from '../../services/authService'
+// deleteAddressById
+import { getAllUsersAdresses } from '../../services/authService'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const users = ref([])
 onMounted(async () => {
   await getAddresses()
 })
-const goToUrl = (id) => {
-  router.push(`/dashboard/add/address/${id ? id : ''}`)
+const goToUrl = (id, action) => {
+  router.push(`/dashboard/${action}/address/${id ? id : ''}`)
 }
 const getAddresses = async () => {
   const { data } = await getAllUsersAdresses()
   users.value = data.addresses.length > 0 ? data.addresses : []
 }
-const deleteAddress = async (userId) => {
-  const { data } = await deleteAddressById(userId)
-  if (data.message === 'user addresses deleted') {
-    alert('User Address Deleted Successfully')
-    await getAddresses()
-  }
-}
+// const deleteAddress = async (userId) => {
+//   alert(userId)
+//   if (userId) return
+//   const { data } = await deleteAddressById(userId)
+//   if (data.message === 'user addresses deleted') {
+//     alert('User Address Deleted Successfully')
+//     await getAddresses()
+//   }
+// }
 </script>
 
 <style scoped></style>

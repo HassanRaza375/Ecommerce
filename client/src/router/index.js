@@ -85,6 +85,12 @@ const router = createRouter({
       meta: { requiresAuth: true }, // Protected
     },
     {
+      path: '/dashboard/edit/address/:id?',
+      name: 'Edit Addresses',
+      component: () => import('../views/dashboard/editAdresses.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
       path: '/dashboard/wishList/:id?',
       name: 'wishList',
       component: () => import('../views/dashboard/wishList.vue'),

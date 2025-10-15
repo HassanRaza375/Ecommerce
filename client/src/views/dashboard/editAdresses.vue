@@ -140,9 +140,9 @@ const sumbitForm = async () => {
     isloading.value = false
   }
 }
-// onMounted(async () => {
-//   await getData()
-// })
+onMounted(async () => {
+  await getData()
+})
 const getData = async () => {
   const { data } = await getUsersAdressesById(u_id.value)
   Item.value = data.addresses[0] || {}
