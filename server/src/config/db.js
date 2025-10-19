@@ -9,5 +9,13 @@ const pool = new Pool({
   password: process.env.DB_PASS,
   port: process.env.DB_PORT,
 });
-
+pool
+  .connect()
+  .then(() => {
+    console.log("✅ Connected to PostgreSQL from index.js");
+  })
+  .catch((err) => {
+    console.error("❌ PostgreSQL connection error in index.js:", err.message);
+    process.exit(1); // Optional: Stop server if DB fails to connect
+  });
 module.exports = pool;
