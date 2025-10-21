@@ -11,6 +11,7 @@ const {
   getUsersAdressesById,
   DeleteAdressesById,
   UpdateAdressesById,
+  addAdressesById,
 } = require("../controllers/authController");
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.delete("/deleteAccount/:id", DeleteAccount);
 router.get("/usersAddresses/", getAllUsersAdresses);
 router.get("/usersAddresses/:id", getUsersAdressesById);
 router.delete("/deleteAddresses/:id", DeleteAdressesById);
+router.post("/addUserAddress/:id", addAdressesById);
 router.patch("/updateUserAddress/:id", UpdateAdressesById);
 
 module.exports = router;

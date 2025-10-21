@@ -2,7 +2,7 @@
   <div class="container py-4">
     <div class="box" v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
       <div class="is-flex is-align-center is-justify-content-space-between">
-        <h1 class="title mb-0">Edit Addresses</h1>
+        <h1 class="title mb-0">Add Addresses</h1>
         <div class="is-flex is-gap-2">
           <button class="button is-dark" @click="goToUrl('/dashboard/addressBook/')">Back</button>
           <button
@@ -13,7 +13,7 @@
             "
             @click="sumbitForm"
           >
-            Update
+            Add
           </button>
         </div>
       </div>
@@ -108,7 +108,7 @@
 <script setup>
 // import moment from 'moment'
 import { ref, onMounted } from 'vue'
-import { getUsersAdressesById, updateUserAddressById } from '../../services/authService'
+import { addAddressById } from '../../services/authService'
 import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
@@ -122,16 +122,16 @@ const Item = ref({
   postal_code: '',
   is_default: false,
 })
-const u_id = ref(route.params.id ? route.params.id : null)
+const u_id = ref(JSON.parse(localStorage.getItem('user')).id)
+console.log('User ID:', u_id.value)
 const isloading = ref(false)
 const sumbitForm = async () => {
   try {
     isloading.value = true
     const obj = { ...Item.value }
-    const { data } = await updateUserAddressById(u_id.value, obj)
+    const { data } = await addAddressById(u_id.value, obj)
     if (data.data.id) {
-      await getData()
-      alert('Address Updated Successfully')
+      alert('Address added Successfully')
     }
     isloading.value = false
   } catch (err) {
@@ -143,10 +143,6 @@ const sumbitForm = async () => {
 // onMounted(async () => {
 //   await getData()
 // })
-const getData = async () => {
-  const { data } = await getUsersAdressesById(u_id.value)
-  Item.value = data.addresses[0] || {}
-}
 const goToUrl = (url) => {
   router.push(`${url}`)
 }

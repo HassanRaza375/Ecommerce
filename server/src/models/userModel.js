@@ -65,17 +65,36 @@ const editUserAddressesById = async (id, fields) => {
     throw new Error("No fields provided for update");
   }
   const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-  
+
   const values = Object.values(fields);
-  
-  const query =`
+
+  const query = `
   UPDATE addresses
   SET ${setClause}
   WHERE user_id = $${keys.length + 1}
   RETURNING *;
   `;
   const result = await pool.query(query, [...values, id]);
-  console.log(result);  
+  console.log(result);
+  return result.rows[0];
+};
+const addUserAddressesById = async (id, fields) => {
+  const keys = Object.keys(fields);
+  if (keys.length === 0) {
+    throw new Error("No fields provided for update");
+  }
+  const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+
+  const values = Object.values(fields);
+
+  const query = `
+  UPDATE addresses
+  SET ${setClause}
+  WHERE user_id = $${keys.length + 1}
+  RETURNING *;
+  `;
+  const result = await pool.query(query, [...values, id]);
+  console.log(result);
   return result.rows[0];
 };
 module.exports = {
@@ -89,4 +108,5 @@ module.exports = {
   getUserAddresses,
   deleteAddressById,
   editUserAddressesById,
+  addUserAddressesById,
 };
