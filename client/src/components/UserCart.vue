@@ -5,7 +5,7 @@ defineProps({
     required: true,
   },
 })
-const emit = defineEmits(['toggleUserCart'])
+const emit = defineEmits(['isCartOpen'])
 </script>
 <template>
   <div>
@@ -13,7 +13,7 @@ const emit = defineEmits(['toggleUserCart'])
       <div class="offcanvas-content box">
         <div class="is-flex is-align-items-center is-justify-content-space-between">
           <h2 class="title is-4">Cart</h2>
-          <i class="pi pi-times pointer" @click="emit('toggleUserCart')"></i>
+          <i class="pi pi-times pointer" @click="emit('isCartOpen')"></i>
         </div>
         <ul>
           <li v-for="item in [1, 2, 3, 4]" :key="item">
@@ -24,7 +24,7 @@ const emit = defineEmits(['toggleUserCart'])
     </div>
 
     <!-- Optional overlay -->
-    <div v-if="isCartOpen" class="offcanvas-overlay" @click="emit('toggleUserCart')"></div>
+    <div v-if="isCartOpen" class="offcanvas-overlay" @click="emit('isCartOpen')"></div>
   </div>
 </template>
 

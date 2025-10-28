@@ -6,6 +6,10 @@ let productData = ref({})
 const getProductData = async () => {
   const { data } = await getProducts()
   let categories = []
+  if(data.length === 0) {
+    productData.value = []
+    return
+  }
   data.forEach((e) => {
     categories.push(e.category)
   })

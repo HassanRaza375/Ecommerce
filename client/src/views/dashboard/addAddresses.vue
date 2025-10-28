@@ -33,7 +33,7 @@
           <div class="field">
             <label class="label">Phone#</label>
             <div class="control">
-              <input v-model="Item.phone" class="input" type="number" placeholder="Text input" />
+              <input v-model="Item.phone" class="input" type="number" min="0" placeholder="Text input" />
             </div>
           </div>
         </div>
