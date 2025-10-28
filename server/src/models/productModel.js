@@ -22,7 +22,7 @@ const getAllProducts = async () => {
   const result = await pool.query(
     "SELECT * FROM products ORDER BY created_at DESC"
   );
-  if(result.rows.length === 0) return "No products found";
+  if (result.rows.length === 0) return [];
   return result.rows;
 };
 
