@@ -175,7 +175,7 @@ const UpdateAdressesById = async (req, res) => {
     if (postal_code !== undefined) fields.postal_code = postal_code;
     if (is_default !== undefined) fields.is_default = is_default;
 
-    const updatedAddress = await addUserAddressesById(req.params.id, fields);
+    const updatedAddress = await editUserAddressesById(req.params.id, fields);
 
     if (!updatedAddress) {
       return res.status(404).json({ message: "Address not found" });
@@ -196,6 +196,7 @@ const addAdressesById = async (req, res) => {
       phone,
       address_line1,
       address_line2,
+      country,
       city,
       state,
       postal_code,
@@ -208,16 +209,17 @@ const addAdressesById = async (req, res) => {
     if (phone !== undefined) fields.phone = phone;
     if (address_line1 !== undefined) fields.address_line1 = address_line1;
     if (address_line2 !== undefined) fields.address_line2 = address_line2;
+    if (country !== undefined) fields.country = country;
     if (city !== undefined) fields.city = city;
     if (state !== undefined) fields.state = state;
     if (postal_code !== undefined) fields.postal_code = postal_code;
     if (is_default !== undefined) fields.is_default = is_default;
-    res.json({
-      message: "Address Added successfully",
-      data: fields,
-    });
-    if (req.params.id) return;
-    const updatedAddress = await editUserAddressesById(req.params.id, fields);
+    // res.json({
+    //   message: "Address Added successfully",
+    //   data: fields,
+    // });
+    // if (req.params.id) return;
+    const updatedAddress = await addUserAddressesById(req.params.id, fields);
 
     if (!updatedAddress) {
       return res.status(404).json({ message: "Address not found" });

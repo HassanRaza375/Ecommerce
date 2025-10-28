@@ -81,22 +81,25 @@ const editUserAddressesById = async (id, fields) => {
 const addUserAddressesById = async (id, fields) => {
   const keys = Object.keys(fields);
   if (keys.length === 0) {
-    throw new Error("No fields provided for update");
+    throw new Error("No fields provided for insert");
   }
-  const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
 
+  // Prepare columns and values for INSERT
+  const columns = keys.join(", ");
+  const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
   const values = Object.values(fields);
 
   const query = `
-  UPDATE addresses
-  SET ${setClause}
-  WHERE user_id = $${keys.length + 1}
-  RETURNING *;
+    INSERT INTO addresses (user_id, ${columns})
+    VALUES ($${keys.length + 1}, ${placeholders})
+    RETURNING *;
   `;
+
   const result = await pool.query(query, [...values, id]);
-  console.log(result);
+  console.log(result.rows[0]);
   return result.rows[0];
 };
+
 module.exports = {
   createUser,
   findUserByEmail,

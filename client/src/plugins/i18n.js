@@ -10,6 +10,7 @@ const messages = {
     confirm: 'Confirm',
     profile: 'Profile',
     logout: 'Logout',
+    cart: 'Cart',
   },
   fr: {
     welcome: 'Bienvenue',
@@ -18,6 +19,7 @@ const messages = {
     confirm: 'Confirmer',
     profile: 'Profil',
     logout: 'Se déconnecter',
+    cart: 'CartFR',
   },
 }
 

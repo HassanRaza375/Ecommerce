@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import { useCommonStore } from '../../stores/common'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -7,6 +7,11 @@ const { t, locale } = useI18n()
 
 const router = useRouter()
 const store = useCommonStore()
+const isCartOpen = ref(false)
+const toggleUserCart = () => {
+  isCartOpen.value = !isCartOpen.value
+  isOpen.value = false
+}
 const isOpen = ref(false)
 const currentLang = ref(locale.value)
 const userId = JSON.parse(localStorage.getItem('userId')) || ''
@@ -18,6 +23,11 @@ const links = ref([
   { name: 'Localization', path: '/Localization' },
   { name: 'DynmaicComponent', path: '/DynmaicComponent' },
 ])
+const UserCart = defineAsyncComponent({
+  loader: () => import('../../components/UserCart.vue'),
+  delay: 200,
+  timeout: 5000,
+})
 const Logout = () => {
   store.LogOut()
   router.push('/Login')
@@ -132,6 +142,12 @@ const changeLanguage = () => {
                         ><i class="pi pi-user"></i> {{ t('profile') }}</RouterLink
                       >
                       <hr class="dropdown-divider" />
+                      <div
+                        class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1 pointer"
+                        @click="toggleUserCart"
+                      >
+                        <i class="pi pi-shopping-cart" style="font-size: 1rem"></i> {{ t('cart') }}
+                      </div>
                       <a
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         @click="Logout"
@@ -147,6 +163,7 @@ const changeLanguage = () => {
         </div>
       </nav>
     </div>
+    <UserCart @isCartOpen="toggleUserCart" :isCartOpen="isCartOpen" />
   </header>
 </template>
 

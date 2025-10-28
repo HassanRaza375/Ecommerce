@@ -65,6 +65,14 @@
         </div>
         <div class="column is-half">
           <div class="field">
+            <label class="label">Country</label>
+            <div class="control">
+              <input v-model="Item.country" class="input" type="text" placeholder="Text input" />
+            </div>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
             <label class="label">City</label>
             <div class="control">
               <input v-model="Item.city" class="input" type="text" placeholder="Text input" />
@@ -117,6 +125,7 @@ const Item = ref({
   phone: '',
   address_line1: '',
   address_line2: '',
+  country: '',
   city: '',
   state: '',
   postal_code: '',
@@ -130,7 +139,9 @@ const sumbitForm = async () => {
     isloading.value = true
     const obj = { ...Item.value }
     const { data } = await addAddressById(u_id.value, obj)
-    if (data.data.id) {
+    if(Object.keys(data).length === 0){
+      alert('Address Not Added')
+    }else{
       alert('Address added Successfully')
     }
     isloading.value = false

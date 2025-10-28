@@ -35,6 +35,13 @@ const Slider = defineAsyncComponent({
   delay: 200, // wait 200ms before showing loading component
   timeout: 5000, // fail after 5s
 })
+const ProductCard = defineAsyncComponent({
+  loader: () => import('../components/ProductCard.vue'),
+  loadingComponent: LoadingSpinner,
+  // errorComponent: () => import('./ErrorMessage.vue'),
+  delay: 200, // wait 200ms before showing loading component
+  timeout: 5000, // fail after 5s
+})
 
 const fullname = computed(() => {
   console.log('Recomputing fullname')
@@ -70,21 +77,24 @@ function confirmAction(fullname) {
 </script>
 
 <template>
-  <section class="container py-3">
-    <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
-      <div class="box mt-2">
-        <!-- <h1 class="title">{{ fullname }}</h1> -->
-        <Slider :fullname="fullname" :Images="imagsSlider" />
+  <div>
+    <section class="container py-3">
+      <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
+        <div class="box mt-2">
+          <!-- <h1 class="title">{{ fullname }}</h1> -->
+          <Slider :fullname="fullname" :Images="imagsSlider" />
+        </div>
       </div>
-    </div>
-     <div class="box mt-2 mb-0">
-      <button class="button is-primary" @click="isModalOpen = true">Open Modal</button>
-    </div>
+      <div class="box mt-2 mb-0">
+        <button class="button is-primary" @click="isModalOpen = true">Open Modal</button>
+      </div>
+    </section>
+    <ProductCard />
     <CommonModal
       v-if="isModalOpen"
       :is-modal-open="isModalOpen"
       @close-modal="closeModal"
       @confirm-action="confirmAction"
     />
-  </section>
+  </div>
 </template>
