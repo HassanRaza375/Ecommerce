@@ -13,7 +13,8 @@ import {
   reactive,
 } from 'vue'
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
-
+import { useCartStore } from '@/stores/cart'
+const cartStore = useCartStore()
 let firstName = ref('John')
 let lastName = ref('Doe')
 const imagsSlider = reactive([
@@ -52,6 +53,7 @@ onBeforeMount(() => {
 })
 onMounted(() => {
   console.log('on Mounted called')
+  cartStore.loadCart()
 })
 onBeforeUpdate(() => {
   console.log('on BeforeUpdated called')

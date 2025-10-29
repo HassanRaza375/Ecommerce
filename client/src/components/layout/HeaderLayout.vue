@@ -1,12 +1,14 @@
 <script setup>
-import { ref, defineAsyncComponent } from 'vue'
+import { ref,computed ,defineAsyncComponent } from 'vue'
 import { useCommonStore } from '../../stores/common'
+import { useCartStore } from '../../stores/cart'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 const { t, locale } = useI18n()
 
 const router = useRouter()
 const store = useCommonStore()
+const cartStore = useCartStore()
 const isCartOpen = ref(false)
 const toggleUserCart = () => {
   isCartOpen.value = !isCartOpen.value
@@ -15,10 +17,10 @@ const toggleUserCart = () => {
 const isOpen = ref(false)
 const currentLang = ref(locale.value)
 const userId = JSON.parse(localStorage.getItem('userId')) || ''
-const links = ref([
+const links = computed(() => [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
-  { name: 'Cart', path: '/cart' },
+  { name: `Cart(${cartStore.totalItems})`, path: '/cart' }, 
   { name: 'Task', path: '/Todo' },
   { name: 'Localization', path: '/Localization' },
   { name: 'DynmaicComponent', path: '/DynmaicComponent' },
@@ -84,9 +86,9 @@ const changeLanguage = () => {
 
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
-            <RouterLink v-for="(item, i) in links" class="navbar-item" :to="item.path" :key="i">{{
-              item.name
-            }}</RouterLink>
+            <RouterLink v-for="(item, i) in links" class="navbar-item" :to="item.path" :key="i">
+              {{item.name}}
+            </RouterLink>
           </div>
 
           <div class="navbar-end">

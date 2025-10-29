@@ -2,6 +2,8 @@
 import { getProducts } from '../services/productService'
 import { capitalize } from '@/utils/capitalize'
 import { onMounted, ref } from 'vue'
+import { useCartStore } from '@/stores/cart'
+const cartStore = useCartStore()
 let productData = ref({})
 const getProductData = async () => {
   const { data } = await getProducts()
@@ -43,7 +45,7 @@ onMounted(async () => {
             <p class="product-price">{{ productCard.price || '0' }}</p>
             <p class="product-stock">{{ productCard.stock }}</p>
             <div class="product-buttons">
-              <button class="btn add-cart">Add to Cart</button>
+              <button class="btn add-cart" @click="cartStore.addItem(productCard)">Add to Cart</button>
               <button class="btn view-detail">View Details</button>
             </div>
           </div>

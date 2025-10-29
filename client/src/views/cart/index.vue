@@ -49,10 +49,10 @@ cart.value = cart.value.filter(i => i.id !== id)
 function checkout() {
 if (cart.value.length === 0) {
     alert('Your cart is empty!')
+    localStorage.removeItem(CART_KEY)
     return
 }
 alert(`Demo checkout — Total: $${total.value.toFixed(2)}`)
-localStorage.removeItem(CART_KEY)
 // cart.value = []
 }
 
@@ -107,7 +107,7 @@ localStorage.setItem(CART_KEY, JSON.stringify(val))
       <div>Browse products and add them to your cart.</div>
     </div>
 
-    <aside class="summary">
+    <aside class="summary" :class="cart.length === 0? 'grid-span-2':''">
       <h2>Order Summary</h2>
       <div class="line"><span>Items</span><span>{{ totalItems }}</span></div>
       <div class="line"><span>Subtotal</span><span>\${{ subtotal.toFixed(2) }}</span></div>
@@ -121,6 +121,9 @@ localStorage.setItem(CART_KEY, JSON.stringify(val))
 
 
 <style scoped>
+.grid-span-2{
+  grid-column: 1/span 2;
+}
 .container {
   max-width: 1100px;
   margin: 36px auto;
