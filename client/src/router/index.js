@@ -40,7 +40,6 @@ const router = createRouter({
       path: '/Cart',
       name: 'Cart',
       component: () => import('../views/cart/index.vue'),
-      meta: { requiresAuth: true }, // Protected
     },
     {
       path: '/Localization',
@@ -58,6 +57,12 @@ const router = createRouter({
       path: '/categories/:slug/products',
       name: 'CategoryProducts',
       component: () => import('../views/category/CategoryProducts.vue'),
+      props: true,
+    },
+    {
+      path: '/categories/:slug/:id',
+      name: 'CategoryProducts',
+      component: () => import('../views/category/productDetail.vue'),
       props: true,
     },
     {

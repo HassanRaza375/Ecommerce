@@ -1,6 +1,13 @@
 <script setup>
 // import { RouterLink, RouterView } from 'vue-router'
-import Header from './components/layout/HeaderLayout.vue';
+import { onMounted } from 'vue'
+import Header from './components/layout/HeaderLayout.vue'
+import { useCartStore } from '@/stores/cart'
+const cartStore = useCartStore()
+onMounted(() => {
+  console.log('on Mounted called')
+  cartStore.loadCart()
+})
 </script>
 
 <template>

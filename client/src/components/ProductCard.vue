@@ -3,12 +3,16 @@ import { getProducts } from '../services/productService'
 import { capitalize } from '@/utils/capitalize'
 import { onMounted, ref } from 'vue'
 import { useCartStore } from '@/stores/cart'
+import { useRouter } from 'vue-router'
+import { removeSpaces } from '@/utils/removeSpaces'
+
+const router = useRouter()
 const cartStore = useCartStore()
 let productData = ref({})
 const getProductData = async () => {
   const { data } = await getProducts()
   let categories = []
-  if(data.length === 0) {
+  if (data.length === 0) {
     productData.value = []
     return
   }
@@ -25,6 +29,10 @@ const getProductData = async () => {
 
   productData.value = filteredProducts
   console.log(productData.value)
+}
+const showDetail = (category, id) => {
+  let filterCategory = removeSpaces(category)
+  router.push(`/categories/${filterCategory}/${id}`)
 }
 onMounted(async () => {
   await getProductData()
@@ -45,8 +53,12 @@ onMounted(async () => {
             <p class="product-price">{{ productCard.price || '0' }}</p>
             <p class="product-stock">{{ productCard.stock }}</p>
             <div class="product-buttons">
-              <button class="btn add-cart" @click="cartStore.addItem(productCard)">Add to Cart</button>
-              <button class="btn view-detail">View Details</button>
+              <button class="btn add-cart" @click="cartStore.addItem(productCard)">
+                Add to Cart
+              </button>
+              <button class="btn view-detail" @click="showDetail(product.title, productCard.id)">
+                View Details
+              </button>
             </div>
           </div>
         </div>

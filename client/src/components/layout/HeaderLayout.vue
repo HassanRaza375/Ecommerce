@@ -20,7 +20,7 @@ const userId = JSON.parse(localStorage.getItem('userId')) || ''
 const links = computed(() => [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
-  { name: `Cart(${cartStore.totalItems})`, path: '/cart' }, 
+  { name: `Cart(${cartStore.totalItems})`, path: '/cart' },
   { name: 'Task', path: '/Todo' },
   { name: 'Localization', path: '/Localization' },
   { name: 'DynmaicComponent', path: '/DynmaicComponent' },
