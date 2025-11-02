@@ -1,9 +1,17 @@
 <script setup>
-import { ref } from 'vue'
-import { reactive } from 'vue'
+import { ref ,defineAsyncComponent,reactive } from 'vue'
 import CardBox from '@/components/CardBox.vue'
 import ScopedSlot from '@/components/ScopedSlot.vue'
+import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
+const CommonModal = defineAsyncComponent({
+  loader: () => import('../components/Modals/CommonModal.vue'),
+  loadingComponent: LoadingSpinner,
+  // errorComponent: () => import('./ErrorMessage.vue'),
+  delay: 200, // wait 200ms before showing loading component
+  timeout: 5000, // fail after 5s3
+})
 const removeNotification = ref(true)
+const isModalOpen = ref(false)
 const attributes = {
   id: 'test_id',
   class: 'test_class',
@@ -15,6 +23,14 @@ setTimeout(() => {
   num.names.push('new name')
   num.human = false
 }, 2000)
+function confirmAction(fullname) {
+  firstName.value = fullname.split(' ')[0]
+  lastName.value = fullname.split(' ')[1] || ''
+  closeModal()
+}
+function closeModal() {
+  isModalOpen.value = false
+}
 </script>
 <template>
   <div class="about">
@@ -49,7 +65,16 @@ setTimeout(() => {
           <h2>Scoped slot {{ nm }} {{ age }}</h2>
         </ScopedSlot>
       </div>
+       <div class="box mt-2 mb-0">
+        <button class="button is-primary" @click="isModalOpen = true">Open Modal</button>
+      </div>
     </div>
+     <CommonModal
+      v-if="isModalOpen"
+      :is-modal-open="isModalOpen"
+      @close-modal="closeModal"
+      @confirm-action="confirmAction"
+    />
   </div>
 </template>
 

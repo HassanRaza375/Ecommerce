@@ -1,16 +1,44 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { capitalize } from '@/utils/capitalize'
 import { useCartStore } from '@/stores/cart'
 import { useRouter } from 'vue-router'
 import { removeSpaces } from '@/utils/removeSpaces'
-
+import { getProducts } from '@/services/productService'
+const route = useRoute()
 const router = useRouter()
 const cartStore = useCartStore()
-defineProps({
-  data: {
-    type: Object,
-    required: true,
-  },
+let productData = ref({})
+let filteredCategories=ref([])
+const getProductData = async (category) => {
+  const { data } = await getProducts()
+  let categories = []
+  if (data.length === 0) {
+    productData.value = []
+    return
+  }
+  data.forEach((e) => {
+    categories.push(e.category)
+  })
+  filteredCategories = [...new Set(categories)]
+  let filteredProducts = []
+  filteredCategories.forEach((e) => {
+    let p = data.filter((p) => p.category === e)
+    let object = { title: e, productList: [...p] }
+    filteredProducts.push(object)
+  })
+debugger
+  productData.value = filteredProducts?.filter(
+    (categoryItem) => removeSpaces(categoryItem.title) === removeSpaces(category)
+  )
+  console.log(category)
+  console.log(productData.value)
+}
+onMounted(async () => {
+let category = route.params.slug
+ await getProductData(category)
+  console.log('on Mounted called')
 })
 const showDetail = (category, id) => {
   let filterCategory = removeSpaces(category)
@@ -19,7 +47,7 @@ const showDetail = (category, id) => {
 </script>
 <template>
   <div>
-    <section class="product-section container" v-for="product in data" :key="product.title">
+    <section class="product-section container" v-for="product in productData" :key="product.title">
       <h2 class="section-title">{{ capitalize(product.title) }}</h2>
       <div class="product-grid">
         <!-- Product Card -->

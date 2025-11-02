@@ -66,6 +66,12 @@ const router = createRouter({
       props: true,
     },
     {
+      path: '/categories/:slug/',
+      name: 'Category',
+      component: () => import('../views/category/singleCategory.vue'),
+      props: true,
+    },
+    {
       path: '/dashboard/users',
       name: 'Users',
       component: () => import('../views/dashboard/allUsers.vue'),

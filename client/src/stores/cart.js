@@ -23,15 +23,22 @@ export const useCartStore = defineStore('cart', {
 
     addItem(product) {
       const existing = this.items.find((item) => item.id === product.id)
+      const desiredQty = product.quantity ?? 1
+
       if (existing) {
-        if (existing.quantity < product.stock) {
-          existing.quantity++
+        if (existing.quantity + desiredQty <= product.stock) {
+          existing.quantity += desiredQty
         } else {
-          // Optional: notify the user
           alert(`Only ${product.stock} in stock.`)
         }
       } else {
-        this.items.push({ ...product, quantity: 1 })
+        if (desiredQty <= product.stock) {
+          this.items.push({ ...product, quantity: desiredQty })
+          alert('Product added to cart.')
+        } else {
+          debugger
+          alert(`Only ${product.stock} in stock.`)
+        }
       }
       this.saveCart()
     },

@@ -36,8 +36,9 @@ function addToCart() {
     id: product.value.id,
     name: product.value.name,
     price: Number(product.value.price),
-    qty: qty.value,
+    quantity: qty.value,
     image: product.value.image_url,
+    stock: product.value.stock,
   })
 
   added.value = true

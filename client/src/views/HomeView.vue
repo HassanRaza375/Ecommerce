@@ -1,6 +1,4 @@
 <script setup>
-// import TheWelcome from '../components/TheWelcome.vue'
-// import Slider from '../components/Slider.vue'
 import {
   ref,
   computed,
@@ -13,6 +11,7 @@ import {
   reactive,
 } from 'vue'
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
+import { getProducts } from '../services/productService'
 let firstName = ref('John')
 let lastName = ref('Doe')
 const imagsSlider = reactive([
@@ -20,13 +19,6 @@ const imagsSlider = reactive([
   'https://front.satjapan.info/assets/images/new-bannars/homepage-one.webp',
   'https://front.satjapan.info/assets/images/new-bannars/homepage-3.webp',
 ])
-const CommonModal = defineAsyncComponent({
-  loader: () => import('../components/Modals/CommonModal.vue'),
-  loadingComponent: LoadingSpinner,
-  // errorComponent: () => import('./ErrorMessage.vue'),
-  delay: 200, // wait 200ms before showing loading component
-  timeout: 5000, // fail after 5s
-})
 const Slider = defineAsyncComponent({
   loader: () => import('../components/Slider.vue'),
   loadingComponent: LoadingSpinner,
@@ -41,15 +33,48 @@ const ProductCard = defineAsyncComponent({
   delay: 200, // wait 200ms before showing loading component
   timeout: 5000, // fail after 5s
 })
+const CategoryTabs = defineAsyncComponent({
+  loader: () => import('../components/tabs/categoryTabs.vue'),
+  loadingComponent: LoadingSpinner,
+  // errorComponent: () => import('./ErrorMessage.vue'),
+  delay: 200, // wait 200ms before showing loading component
+  timeout: 5000, // fail after 5s
+})
 
 const fullname = computed(() => {
   console.log('Recomputing fullname')
   return `${firstName.value} ${lastName.value}`
 })
+
+let productData = ref({})
+let filteredCategories=ref([])
+const getProductData = async () => {
+  const { data } = await getProducts()
+  let categories = []
+  if (data.length === 0) {
+    productData.value = []
+    return
+  }
+  data.forEach((e) => {
+    categories.push(e.category)
+  })
+  filteredCategories = [...new Set(categories)]
+  let filteredProducts = []
+  filteredCategories.forEach((e) => {
+    let p = data.filter((p) => p.category === e)
+    let object = { title: e, productList: [...p] }
+    filteredProducts.push(object)
+  })
+
+  productData.value = filteredProducts
+  console.log(productData.value)
+}
+
 onBeforeMount(() => {
   console.log('on beforemount called')
 })
-onMounted(() => {
+onMounted(async () => {
+ await getProductData()
   console.log('on Mounted called')
 })
 onBeforeUpdate(() => {
@@ -61,18 +86,6 @@ onUpdated(() => {
 onBeforeUnmount(() => {
   console.log('on BeforeUnmount called')
 })
-
-const isModalOpen = ref(false)
-
-function closeModal() {
-  isModalOpen.value = false
-}
-
-function confirmAction(fullname) {
-  firstName.value = fullname.split(' ')[0]
-  lastName.value = fullname.split(' ')[1] || ''
-  closeModal()
-}
 </script>
 
 <template>
@@ -80,20 +93,14 @@ function confirmAction(fullname) {
     <section class="container py-3">
       <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
         <div class="box mt-2">
-          <!-- <h1 class="title">{{ fullname }}</h1> -->
           <Slider :fullname="fullname" :Images="imagsSlider" />
         </div>
       </div>
+      <!-- tabs -->
       <div class="box mt-2 mb-0">
-        <button class="button is-primary" @click="isModalOpen = true">Open Modal</button>
+        <CategoryTabs :categories="filteredCategories"/>
       </div>
     </section>
-    <ProductCard />
-    <CommonModal
-      v-if="isModalOpen"
-      :is-modal-open="isModalOpen"
-      @close-modal="closeModal"
-      @confirm-action="confirmAction"
-    />
+    <ProductCard :data="productData"/>
   </div>
 </template>
