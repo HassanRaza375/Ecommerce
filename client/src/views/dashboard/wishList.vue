@@ -3,6 +3,11 @@
     <!-- Header -->
     <div class="wishlist-header">
       <h1 class="title">WishList</h1>
+         <div class="card">
+      <div class="is-flex is-align-items-center is-justify-content-space-between">
+        <Button label="Clear Wishlist" severity="danger" @click="clearWishListItem" />
+      </div>
+    </div>
     </div>
 
     <!-- Empty state -->
@@ -45,7 +50,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import { getWishList, deleteWishListById } from '@/services/wishList'
+import { getWishList, deleteWishListById, clearWishList } from '@/services/wishList'
+import Button from 'primevue/button';
+
 let userId = JSON.parse(localStorage.getItem('userId'))
 const toast = useToast()
 const wishlist = ref([])
@@ -79,7 +86,26 @@ const removeItem = async (productId) => {
     })
   }
 }
-
+const clearWishListItem = async () => {
+  try {
+    const res = await clearWishList(userId)
+    console.log(res)
+    fetchWishlist()
+    toast.add({
+      severity: 'success',
+      summary: 'Wishlist Cleared',
+      detail: 'All items removed from wishlist',
+      life: 2000,
+    })
+  } catch (err) {
+    toast.add({
+      severity: 'error',
+      summary: `${err?.response?.data?.message} Removed`,
+      detail: 'Failed to clear wishlist',
+      life: 2000,
+    })
+  }
+}
 const addToCart = (item) => {
   // your cart store logic
   // cartStore.addItem(item);
