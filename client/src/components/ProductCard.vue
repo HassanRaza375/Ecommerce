@@ -3,6 +3,8 @@ import { capitalize } from '@/utils/capitalize'
 import { useCartStore } from '@/stores/cart'
 import { useRouter } from 'vue-router'
 import { removeSpaces } from '@/utils/removeSpaces'
+import { createWishList } from '../services/wishList'
+import { useToast } from 'primevue/usetoast';
 
 const router = useRouter()
 const cartStore = useCartStore()
@@ -12,9 +14,29 @@ defineProps({
     required: true,
   },
 })
+let userId = JSON.parse(localStorage.getItem('userId'))
 const showDetail = (category, id) => {
   let filterCategory = removeSpaces(category)
   router.push(`/categories/${filterCategory}/${id}`)
+}
+const toast = useToast()
+
+const addToWishList = async (product) => {
+  try {
+    const { data } = await createWishList(userId, { productId: product.id })
+    toast.add({
+      severity: 'success',
+      summary: `${data.message}`,
+      detail: `${product.name} added`,
+      life: 1500,
+    })
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: `${error?.response?.data?.message}`,
+      life: 1500,
+    })
+  }
 }
 </script>
 <template>
@@ -24,7 +46,13 @@ const showDetail = (category, id) => {
       <div class="product-grid">
         <!-- Product Card -->
         <div class="product-card" v-for="productCard in product.productList" :key="productCard.id">
-          <img :src="productCard.image_url" alt="Product Image" class="product-image" />
+          <div class="image-wrapper">
+            <img :src="productCard.image_url" alt="Product Image" class="product-image" />
+            <button class="wishlist-icon" @click="addToWishList(productCard)">
+              <i class="pi pi-heart"></i>
+            </button>
+          </div>
+
           <div class="product-info">
             <h3 class="product-name">{{ productCard.name || '' }}</h3>
             <p class="product-description">{{ productCard.description || '' }}</p>
@@ -47,6 +75,31 @@ const showDetail = (category, id) => {
 </template>
 
 <style scoped>
+.image-wrapper {
+  position: relative;
+}
+
+.wishlist-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.wishlist-icon:hover {
+  transform: scale(1.1);
+}
+
 .product-section {
   padding: 20px 0;
 }

@@ -1,5 +1,6 @@
 import api from './api'
 
-export const getWishList = () => api.get('/wishList')
-export const createWishList = (data) => api.post('/wishList', data)
-export const deleteWishList = (id) => api.delete(`/wishList/${id}`)
+export const getWishList = (id) => api.get(`/wishList/${id}`)
+export const createWishList = (id, data) => api.post(`/wishList/add/${id}`, data)
+export const deleteWishListById = (id, data) => api.delete(`/wishList/remove/${id}`, { data })
+export const clearWishList = () => api.delete(`/wishList/clear`)

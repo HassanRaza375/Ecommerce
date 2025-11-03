@@ -2,7 +2,9 @@
 // import { RouterLink, RouterView } from 'vue-router'
 import { onMounted } from 'vue'
 import Header from './components/layout/HeaderLayout.vue'
+import Toast from 'primevue/toast';
 import { useCartStore } from '@/stores/cart'
+
 const cartStore = useCartStore()
 onMounted(() => {
   console.log('on Mounted called')
@@ -14,6 +16,7 @@ onMounted(() => {
   <div>
     <Header />
     <RouterView />
+    <Toast />
   </div>
 </template>
 
