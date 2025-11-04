@@ -41,7 +41,7 @@ import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
-import { getProducts } from '../services/productService'
+import { getProducts,getProductsCategories } from '../services/productService'
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
 
 const ProductCard = defineAsyncComponent({
@@ -56,10 +56,10 @@ const selectedCategory = ref(null)
 const priceRange = ref({ min: 0, max: 1000 })
 let productData = ref([])
 let filteredCategories = ref([])
-const categories = [
+const categories = ref ([
   { name: 'Fragrances', code: 'fragrances' },
   { name: 'Skincare', code: 'skincare' },
-]
+])
 
 // Methods
 async function searchProducts() {
@@ -101,8 +101,14 @@ const getProductData = async () => {
   productData.value = filteredProducts
   console.log(productData.value)
 }
+const getAllCatgories = async ()=>{
+  const {data} = await getProductsCategories()
+  debugger
+  categories.value = data
+}
 onMounted(async () => {
   await getProductData()
+  await getAllCatgories()
 })
 
 

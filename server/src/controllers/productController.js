@@ -5,6 +5,7 @@ const {
   getProductById,
   updateProduct,
   deleteProduct,
+  getAllCategories,
 } = require("../models/productModel");
 
 const addProduct = async (req, res) => {
@@ -67,8 +68,19 @@ const searchProducts = async (req, res) => {
     const products = await productModel.search(req.query);
     res.json(products);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: err });
+  }
+};
+const fetchAllCategories = async (req, res) => {
+  try {
+    console.log("okok");
+    const categories = await productModel.getAllCategories();
+    console.log(categories);
+
+    res.status(200).json(categories);
+  } catch (err) {
+    console.log("okok");
+    res.status(500).json({ error: err });
   }
 };
 module.exports = {
@@ -78,4 +90,5 @@ module.exports = {
   editProduct,
   removeProduct,
   searchProducts,
+  fetchAllCategories,
 };

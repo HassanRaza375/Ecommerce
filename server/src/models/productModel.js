@@ -125,6 +125,10 @@ const search = async (filters) => {
   const result = await db.query(sql, params);
   return result.rows;
 };
+const getAllCategories = async () => {
+  const result = await pool.query("SELECT DISTINCT category FROM products");
+  return result.rows;
+};
 module.exports = {
   createProduct,
   getAllProducts,
@@ -132,4 +136,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   search,
+  getAllCategories,
 };
