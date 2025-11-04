@@ -6,6 +6,7 @@ const {
   fetchProduct,
   editProduct,
   removeProduct,
+  searchProducts,
 } = require("../controllers/productController");
 const {
   authMiddleware,
@@ -22,5 +23,6 @@ router.delete("/:id", authMiddleware, authorizeRoles("admin"), removeProduct);
 // Public routes
 router.get("/", fetchProducts);
 router.get("/:id", fetchProduct);
+router.get("/search", searchProducts);
 
 module.exports = router;

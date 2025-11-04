@@ -10,7 +10,7 @@ const route = useRoute()
 const router = useRouter()
 const cartStore = useCartStore()
 let productData = ref({})
-let filteredCategories=ref([])
+let filteredCategories = ref([])
 const getProductData = async (category) => {
   const { data } = await getProducts()
   let categories = []
@@ -21,23 +21,22 @@ const getProductData = async (category) => {
   data.forEach((e) => {
     categories.push(e.category)
   })
-  filteredCategories = [...new Set(categories)]
+  filteredCategories.value = [...new Set(categories)]
   let filteredProducts = []
-  filteredCategories.forEach((e) => {
+  filteredCategories.value.forEach((e) => {
     let p = data.filter((p) => p.category === e)
     let object = { title: e, productList: [...p] }
     filteredProducts.push(object)
   })
-debugger
   productData.value = filteredProducts?.filter(
-    (categoryItem) => removeSpaces(categoryItem.title) === removeSpaces(category)
+    (categoryItem) => removeSpaces(categoryItem.title) === removeSpaces(category),
   )
   console.log(category)
   console.log(productData.value)
 }
 onMounted(async () => {
-let category = route.params.slug
- await getProductData(category)
+  let category = route.params.slug
+  await getProductData(category)
   console.log('on Mounted called')
 })
 const showDetail = (category, id) => {

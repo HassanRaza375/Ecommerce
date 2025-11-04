@@ -11,9 +11,19 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/aboutold',
+      name: 'abouttest',
+      component: () => import('../views/AboutView.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('../views/AboutView_v2.vue'),
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: () => import('../views/searchPage.vue'),
     },
     {
       path: '/Todo',
@@ -110,7 +120,7 @@ const router = createRouter({
   ],
 })
 
-// ✅ Navigation Guard
+//  Navigation Guard
 router.beforeEach((to, from, next) => {
   const isLoggedIn = AuthService.isAuthenticated()
 

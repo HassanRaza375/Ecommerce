@@ -58,9 +58,9 @@ const getProductData = async () => {
   data.forEach((e) => {
     categories.push(e.category)
   })
-  filteredCategories = [...new Set(categories)]
+  filteredCategories.value = [...new Set(categories)]
   let filteredProducts = []
-  filteredCategories.forEach((e) => {
+  filteredCategories.value.forEach((e) => {
     let p = data.filter((p) => p.category === e)
     let object = { title: e, productList: [...p] }
     filteredProducts.push(object)

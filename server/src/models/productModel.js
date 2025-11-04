@@ -55,11 +55,81 @@ const deleteProduct = async (id) => {
   );
   return result.rows[0];
 };
+const search = async (filters) => {
+  const {
+    query,
+    category,
+    min_price,
+    max_price,
+    min_stock,
+    max_stock,
+    sort_by = "created_at",
+    sort_order = "desc",
+    page = 1,
+    limit = 12,
+  } = filters;
 
+  const offset = (page - 1) * limit;
+
+  let where = [];
+  let params = [];
+  let i = 1;
+
+  // TEXT SEARCH
+  if (query) {
+    where.push(`(name ILIKE $${i} OR description ILIKE $${i})`);
+    params.push(`%${query}%`);
+    i++;
+  }
+
+  // CATEGORY FILTER
+  if (category) {
+    where.push(`category = $${i}`);
+    params.push(category);
+    i++;
+  }
+
+  // PRICE FILTERS
+  if (min_price) {
+    where.push(`price >= $${i}`);
+    params.push(min_price);
+    i++;
+  }
+  if (max_price) {
+    where.push(`price <= $${i}`);
+    params.push(max_price);
+    i++;
+  }
+
+  // STOCK FILTERS
+  if (min_stock) {
+    where.push(`stock >= $${i}`);
+    params.push(min_stock);
+    i++;
+  }
+  if (max_stock) {
+    where.push(`stock <= $${i}`);
+    params.push(max_stock);
+    i++;
+  }
+
+  const whereQuery = where.length > 0 ? "WHERE " + where.join(" AND ") : "";
+
+  const sql = `
+    SELECT * FROM products
+    ${whereQuery}
+    ORDER BY ${sort_by} ${sort_order}
+    LIMIT ${limit} OFFSET ${offset}
+  `;
+
+  const result = await db.query(sql, params);
+  return result.rows;
+};
 module.exports = {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  search,
 };

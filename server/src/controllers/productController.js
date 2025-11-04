@@ -62,11 +62,20 @@ const removeProduct = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
+const searchProducts = async (req, res) => {
+  try {
+    const products = await productModel.search(req.query);
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 module.exports = {
   addProduct,
   fetchProducts,
   fetchProduct,
   editProduct,
   removeProduct,
+  searchProducts,
 };
