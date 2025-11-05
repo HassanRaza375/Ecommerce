@@ -23,8 +23,8 @@ router.delete("/:id", authMiddleware, authorizeRoles("admin"), removeProduct);
 
 // Public routes
 router.get("/", fetchProducts);
+router.get("/search/ec", searchProducts);
 router.get("/:id", fetchProduct);
-router.get("/search", searchProducts);
-router.get("/categories", fetchAllCategories);
+router.get("/all/categories", fetchAllCategories);
 
 module.exports = router;

@@ -6,6 +6,7 @@ const {
   updateProduct,
   deleteProduct,
   getAllCategories,
+  search,
 } = require("../models/productModel");
 
 const addProduct = async (req, res) => {
@@ -64,22 +65,26 @@ const removeProduct = async (req, res) => {
   }
 };
 const searchProducts = async (req, res) => {
+  console.log("search started");
+
   try {
-    const products = await productModel.search(req.query);
+    const products = await search(req.query);
+    if (!products.length) {
+      return res.status(200).json({
+        message: "No records found",
+        products: [],
+      });
+    }
     res.json(products);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err, message: "Server errorabc" });
   }
 };
 const fetchAllCategories = async (req, res) => {
   try {
-    console.log("okok");
-    const categories = await productModel.getAllCategories();
-    console.log(categories);
-
+    const categories = await getAllCategories();
     res.status(200).json(categories);
   } catch (err) {
-    console.log("okok");
     res.status(500).json({ error: err });
   }
 };

@@ -66,50 +66,42 @@ const search = async (filters) => {
     sort_by = "created_at",
     sort_order = "desc",
     page = 1,
-    limit = 12,
+    limit = null,
   } = filters;
 
-  const offset = (page - 1) * limit;
+  const offset = (page - 1) * limit || 0;
 
   let where = [];
   let params = [];
   let i = 1;
 
-  // TEXT SEARCH
-  if (query) {
+  if (query && query.trim() !== "") {
     where.push(`(name ILIKE $${i} OR description ILIKE $${i})`);
     params.push(`%${query}%`);
     i++;
   }
 
-  // CATEGORY FILTER
   if (category) {
     where.push(`category = $${i}`);
     params.push(category);
     i++;
   }
 
-  // PRICE FILTERS
-  if (min_price) {
+  if (min_price !== null && min_price !== undefined) {
     where.push(`price >= $${i}`);
     params.push(min_price);
     i++;
   }
-  if (max_price) {
+
+  if (max_price !== null && max_price !== undefined) {
     where.push(`price <= $${i}`);
     params.push(max_price);
     i++;
   }
 
-  // STOCK FILTERS
-  if (min_stock) {
+  if (min_stock !== null && min_stock !== undefined) {
     where.push(`stock >= $${i}`);
     params.push(min_stock);
-    i++;
-  }
-  if (max_stock) {
-    where.push(`stock <= $${i}`);
-    params.push(max_stock);
     i++;
   }
 
@@ -118,15 +110,16 @@ const search = async (filters) => {
   const sql = `
     SELECT * FROM products
     ${whereQuery}
-    ORDER BY ${sort_by} ${sort_order}
-    LIMIT ${limit} OFFSET ${offset}
+    ORDER BY ${sort_by} ${sort_order} ${limit ?? `LIMIT ${limit}`}
+    OFFSET ${offset}
   `;
-
-  const result = await db.query(sql, params);
+  const result = await pool.query(sql, params);
   return result.rows;
 };
 const getAllCategories = async () => {
-  const result = await pool.query("SELECT DISTINCT category FROM products");
+  const result = await pool.query(
+    "SELECT MIN(id) AS id, category FROM products GROUP BY category"
+  );
   return result.rows;
 };
 module.exports = {
