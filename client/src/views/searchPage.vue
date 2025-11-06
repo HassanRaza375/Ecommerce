@@ -5,7 +5,7 @@
     </h1>
 
     <div class="filters">
-      <InputText v-model="searchQuery" placeholder="Search for products" />
+      <InputText v-model="filters.query" placeholder="Search for products" />
 
       <Dropdown
         v-model="filters.category"
@@ -34,6 +34,20 @@
         mode="decimal"
         placeholder="Max Price"
       />
+      <InputNumber
+        v-model="filters.min_stock"
+        :min="0"
+        :max="1000"
+        mode="decimal"
+        placeholder="Min Stock"
+      />
+      <InputNumber
+        v-model="filters.max_stock"
+        :min="0"
+        :max="1000"
+        mode="decimal"
+        placeholder="Max Stock"
+      />
 
       <Button label="Search" @click="searchProductQuery" />
       <Button label="Reset" @click="RestSearch" />
@@ -53,6 +67,8 @@ import { getProductsCategories, searchProducts } from '../services/productServic
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
 import { capitalize } from '@/utils/capitalize'
 import { useRouter, useRoute } from 'vue-router'
+import { useToasterStore } from '@/stores/toaster'
+const useToast = useToasterStore()
 const router = useRouter()
 const route = useRoute()
 const ProductCard = defineAsyncComponent({
@@ -62,7 +78,6 @@ const ProductCard = defineAsyncComponent({
   timeout: 5000,
 })
 // Reactive state
-const searchQuery = ref('')
 let restBool = ref(false)
 const filters = ref({
   query: null,
@@ -85,6 +100,9 @@ const categories = ref([])
 // Methods
 async function searchProductQuery() {
   try {
+    if(filters.value.query === null && filters.value.category === null && filters.value.min_price === null && filters.value.max_price === null && filters.value.min_stock === null && filters.value.max_stock === null){
+      useToast.error('Please fill at least one field.')
+    }
     const { data } = await searchProducts({ params: filters.value })
     getProductData(data)
     if (!restBool.value) {

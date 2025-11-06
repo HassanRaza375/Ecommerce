@@ -4,8 +4,8 @@ import { useCartStore } from '@/stores/cart'
 import { useRouter } from 'vue-router'
 import { removeSpaces } from '@/utils/removeSpaces'
 import { createWishList } from '../services/wishList'
-import { useToast } from 'primevue/usetoast';
-
+import { useToasterStore } from '@/stores/toaster'
+const useToast = useToasterStore()
 const router = useRouter()
 const cartStore = useCartStore()
 defineProps({
@@ -19,23 +19,12 @@ const showDetail = (category, id) => {
   let filterCategory = removeSpaces(category)
   router.push(`/categories/${filterCategory}/${id}`)
 }
-const toast = useToast()
-
 const addToWishList = async (product) => {
   try {
     const { data } = await createWishList(userId, { productId: product.id })
-    toast.add({
-      severity: 'success',
-      summary: `${data.message}`,
-      detail: `${product.name} added`,
-      life: 1500,
-    })
+    useToast.success(data.message)
   } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: `${error?.response?.data?.message}`,
-      life: 1500,
-    })
+    useToast.error(error?.response?.data?.message)
   }
 }
 </script>

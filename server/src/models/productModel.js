@@ -105,6 +105,12 @@ const search = async (filters) => {
     i++;
   }
 
+  if (max_stock !== null && max_stock !== undefined) {
+    where.push(`stock >= $${i}`);
+    params.push(max_stock);
+    i++;
+  }
+
   const whereQuery = where.length > 0 ? "WHERE " + where.join(" AND ") : "";
 
   const sql = `

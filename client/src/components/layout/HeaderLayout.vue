@@ -44,7 +44,7 @@ const changeLanguage = () => {
 </script>
 <template>
   <header>
-    <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
+    <div>
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
           <a class="navbar-item" to="/">
@@ -182,5 +182,11 @@ header {
 .dropdown-menu {
   position: absolute;
   z-index: 1000;
+}
+.navbar{
+  z-index: unset;
+}
+header{
+  z-index: unset;
 }
 </style>

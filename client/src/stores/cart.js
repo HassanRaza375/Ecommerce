@@ -1,6 +1,6 @@
 // src/stores/cart.js
 import { defineStore } from 'pinia'
-
+import { useToasterStore } from '@/stores/toaster'
 export const useCartStore = defineStore('cart', {
   state: () => ({
     items: JSON.parse(localStorage.getItem('cart')) || [],
@@ -17,11 +17,14 @@ export const useCartStore = defineStore('cart', {
     },
 
     async loadCart() {
+      const useToast = useToasterStore()
       const localCart = JSON.parse(localStorage.getItem('cart') || '[]')
       this.items = localCart
+      useToast.success('Cart Loaded.')
     },
 
     addItem(product) {
+      const useToast = useToasterStore()
       const existing = this.items.find((item) => item.id === product.id)
       const desiredQty = product.quantity ?? 1
 
@@ -29,23 +32,24 @@ export const useCartStore = defineStore('cart', {
         if (existing.quantity + desiredQty <= product.stock) {
           existing.quantity += desiredQty
         } else {
-          alert(`Only ${product.stock} in stock.`)
+          useToast.success('Only ' + product.stock + ' in stock.')
         }
       } else {
         if (desiredQty <= product.stock) {
           this.items.push({ ...product, quantity: desiredQty })
-          alert('Product added to cart.')
+          useToast.success('Product added to cart.')
         } else {
-          debugger
-          alert(`Only ${product.stock} in stock.`)
+          useToast.error('Only ' + product.stock + ' in stock.')
         }
       }
       this.saveCart()
     },
 
     removeItem(productId) {
+      const useToast = useToasterStore()
       this.items = this.items.filter((item) => item.id !== productId)
       this.saveCart()
+      useToast.success('Product removed from cart.')
     },
 
     decreaseQuantity(productId) {
@@ -57,8 +61,10 @@ export const useCartStore = defineStore('cart', {
     },
 
     clearCart() {
+      const useToast = useToasterStore()
       this.items = []
       this.saveCart()
+      useToast.success('Cart cleared.')
     },
   },
 })
