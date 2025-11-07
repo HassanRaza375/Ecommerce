@@ -1,27 +1,22 @@
 <script setup>
-import { useRouter } from 'vue-router';
-import { capitalize } from '@/utils/capitalize';
-const router = useRouter();
+import { useRouter } from 'vue-router'
+import { capitalize } from '@/utils/capitalize'
+const router = useRouter()
 defineProps({
   categories: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
 })
 const redirectCategory = (category) => {
-    router.push(`/categories/${category.trim()}/`)
-    console.log('Redirecting to category:', category)
+  router.push(`/categories/${category.trim()}/`)
+  console.log('Redirecting to category:', category)
 }
 </script>
 
 <template>
   <div class="tabs-container">
-    <span
-      class="tab"
-      v-for="item in categories"
-      @click="redirectCategory(item)"
-      :key="item"
-    >
+    <span class="tab" v-for="item in categories" @click="redirectCategory(item)" :key="item">
       {{ capitalize(item) }}
     </span>
   </div>
@@ -48,7 +43,7 @@ const redirectCategory = (category) => {
 }
 
 .tab::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   bottom: -2px;
@@ -70,5 +65,22 @@ const redirectCategory = (category) => {
 
 .tab.active::after {
   transform: scaleX(1);
+}
+@media (prefers-color-scheme: dark) {
+  .tab {
+    color: #bbbbbb;
+  }
+
+  .tab:hover {
+    color: #ffffff;
+  }
+
+  .tab.active {
+    color: #ffffff;
+  }
+
+  .tab::after {
+    background: #818cf8;
+  }
 }
 </style>
