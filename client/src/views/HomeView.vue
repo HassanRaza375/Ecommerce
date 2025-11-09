@@ -8,24 +8,23 @@ import {
   onUpdated,
   onBeforeUnmount,
   defineAsyncComponent,
-  reactive,
 } from 'vue'
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
 import { getProducts } from '../services/productService'
-let firstName = ref('John')
-let lastName = ref('Doe')
-const imagsSlider = reactive([
-  'https://front.satjapan.info/assets/images/new-bannars/homepage-5.webp',
-  'https://front.satjapan.info/assets/images/new-bannars/homepage-one.webp',
-  'https://front.satjapan.info/assets/images/new-bannars/homepage-3.webp',
-])
-const Slider = defineAsyncComponent({
-  loader: () => import('../components/Slider.vue'),
-  loadingComponent: LoadingSpinner,
-  // errorComponent: () => import('./ErrorMessage.vue'),
-  delay: 200, // wait 200ms before showing loading component
-  timeout: 5000, // fail after 5s
-})
+// let firstName = ref('John')
+// let lastName = ref('Doe')
+// const imagsSlider = reactive([
+//   'https://front.satjapan.info/assets/images/new-bannars/homepage-5.webp',
+//   'https://front.satjapan.info/assets/images/new-bannars/homepage-one.webp',
+//   'https://front.satjapan.info/assets/images/new-bannars/homepage-3.webp',
+// ])
+// const Slider = defineAsyncComponent({
+//   loader: () => import('../components/Slider.vue'),
+//   loadingComponent: LoadingSpinner,
+//   // errorComponent: () => import('./ErrorMessage.vue'),
+//   delay: 200, // wait 200ms before showing loading component
+//   timeout: 5000, // fail after 5s
+// })
 const ProductCard = defineAsyncComponent({
   loader: () => import('../components/ProductCard.vue'),
   loadingComponent: LoadingSpinner,
@@ -93,7 +92,15 @@ onBeforeUnmount(() => {
     <section class="container py-3">
       <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
         <div class="box mt-2">
-          <Slider :fullname="fullname" :Images="imagsSlider" />
+          <!-- <Slider :fullname="fullname" :Images="imagsSlider" /> -->
+           <section class="hero-dark">
+            <div class="overlay"></div>
+            <div class="hero-content">
+              <h1>Luxury Meets Affordability</h1>
+              <p>Premium products curated specially for you.</p>
+              <button class="btn shop">Start Shopping</button>
+            </div>
+          </section>
         </div>
       </div>
       <!-- tabs -->
@@ -104,3 +111,54 @@ onBeforeUnmount(() => {
     <ProductCard :data="productData"/>
   </div>
 </template>
+<style scoped>
+.hero-dark {
+  position: relative;
+  height: 70vh;
+  background-image: url('https://front.satjapan.info/assets/images/new-bannars/homepage-5.webp');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.btn.shop {
+  padding: 12px 25px;
+  background: #e9c46a;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #000;
+}
+
+.btn.shop:hover {
+  background: #d4a74e;
+}
+</style>

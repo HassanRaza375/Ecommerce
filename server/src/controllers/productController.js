@@ -65,8 +65,6 @@ const removeProduct = async (req, res) => {
   }
 };
 const searchProducts = async (req, res) => {
-  console.log("search started");
-
   try {
     const products = await search(req.query);
     if (!products.length) {

@@ -27,28 +27,23 @@ const showDetail = (category, id) => {
 const addToWishList = async (product) => {
   try {
     const { data } = await createWishList(userId, { productId: product.id })
+    commonStore.addWishListId(product.id) 
     useToast.success(data.message)
   } catch (error) {
     useToast.error(error?.response?.data?.message)
   }
 }
+
 const removeItem = async (product) => {
   try {
-    const res = await deleteWishListById(userId, { productId: product.id })
-    console.log(res)
-    commonStore.removeWishListId(product.id)
+    await deleteWishListById(userId, { productId: product.id })
+    commonStore.removeWishListId(product.id) 
     useToast.success('Item removed from wishlist')
   } catch (err) {
     useToast.error(err?.response?.data?.message)
   }
 }
-const HandleWishList = (product) => {
-  if (commonStore.wishListIds.includes(product.id)) {
-    removeItem(product)
-  } else {
-    addToWishList(product)
-  }
-}
+
 const fetchWishlist = async () => {
   try {
     const { data } = await getWishList(userId)
@@ -57,6 +52,15 @@ const fetchWishlist = async () => {
     console.error(err)
   }
 }
+
+const HandleWishList = (product) => {
+  if (commonStore.wishListIds.includes(product.id)) {
+    removeItem(product)
+  } else {
+    addToWishList(product)
+  }
+}
+
 onMounted(async () => {
   await fetchWishlist()
 })
@@ -130,6 +134,8 @@ onMounted(async () => {
 }
 .wishlist-icon.active i {
   color: red;
+  transform: scale(1.2);
+  transition: transform 0.2s, color 0.2s;
 }
 
 .wishlist-icon:hover {

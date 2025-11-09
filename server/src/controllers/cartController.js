@@ -2,7 +2,7 @@ const Cart = require("../models/cartModel");
 
 const addToCart = async (req, res) => {
   try {
-    const userId = req.user.id; // comes from JWT middleware
+    const userId = req.user.id;
     const { productId, quantity } = req.body;
 
     if (!productId || !quantity || quantity <= 0) {
@@ -12,7 +12,10 @@ const addToCart = async (req, res) => {
     const cartId = await Cart.getOrCreateCart(userId);
     await Cart.addItem(cartId, productId, quantity);
 
-    res.json({ message: "Product added to cart successfully" });
+    const items = await Cart.getCartItems(cartId);
+    const addedItem = items.find((i) => i.product_id == productId);
+
+    res.json(addedItem);
   } catch (err) {
     console.error("Add to Cart Error:", err);
     res.status(500).json({ error: "Server error" });
@@ -50,7 +53,10 @@ const updateItem = async (req, res) => {
     const cartId = await Cart.getOrCreateCart(userId);
     await Cart.updateQuantity(cartId, productId, quantity);
 
-    res.json({ message: "Cart item updated successfully" });
+    const items = await Cart.getCartItems(cartId);
+    const updatedItem = items.find((i) => i.product_id == productId);
+
+    res.json(updatedItem);
   } catch (err) {
     console.error("Update Cart Error:", err);
     res.status(500).json({ error: "Server error" });
@@ -65,7 +71,10 @@ const removeItem = async (req, res) => {
     const cartId = await Cart.getOrCreateCart(userId);
     await Cart.removeItem(cartId, productId);
 
-    res.json({ message: "Product removed from cart" });
+    res.json({
+      message: "Product removed successfully",
+      product_id: Number(productId),
+    });
   } catch (err) {
     console.error("Remove Cart Item Error:", err);
     res.status(500).json({ error: "Server error" });
@@ -85,4 +94,11 @@ const clearCart = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-module.exports = { addToCart, getCart, updateItem, removeItem, clearCart };
+
+module.exports = {
+  addToCart,
+  getCart,
+  updateItem,
+  removeItem,
+  clearCart,
+};

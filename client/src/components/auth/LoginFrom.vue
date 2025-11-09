@@ -2,9 +2,11 @@
 import { reactive, ref } from 'vue'
 import { login } from '../../services/authService'
 import { useCommonStore } from '../../stores/common'
+import { useCartStore } from '../../stores/cart'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const store = useCommonStore()
+const Cartstore = useCartStore()
 const showPassword = ref(false)
 const isloading = ref(false)
 const formData = reactive({})
@@ -20,6 +22,7 @@ const sumbitForm = async () => {
     store.Login(data.token)
     localStorage.setItem('user', JSON.stringify(data?.user))
     localStorage.setItem('userId', data?.user?.id)
+    await Cartstore.loadCartFromApi()
     router.push('/dashboard/profile')
   } catch (err) {
     isloading.value = false

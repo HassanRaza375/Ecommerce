@@ -1,14 +1,23 @@
-// src/stores/cart.js
 import { defineStore } from 'pinia'
 import { useToasterStore } from '@/stores/toaster'
+import { useCommonStore } from '@/stores/common'
+
+import {
+  getCart,
+  addToCart,
+  updateCartItem,
+  removeFromCart,
+  clearCart as apiClearCart,
+} from '@/services/cartService'
+
 export const useCartStore = defineStore('cart', {
   state: () => ({
     items: JSON.parse(localStorage.getItem('cart')) || [],
   }),
 
   getters: {
-    totalItems: (state) => state.items.reduce((sum, item) => sum + item.quantity, 0),
-    totalPrice: (state) => state.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    totalItems: (state) => state.items.reduce((s, i) => s + i.quantity, 0),
+    totalPrice: (state) => state.items.reduce((s, i) => s + i.price_at_added * i.quantity, 0),
   },
 
   actions: {
@@ -16,55 +25,117 @@ export const useCartStore = defineStore('cart', {
       localStorage.setItem('cart', JSON.stringify(this.items))
     },
 
-    async loadCart() {
-      const useToast = useToasterStore()
-      const localCart = JSON.parse(localStorage.getItem('cart') || '[]')
-      this.items = localCart
-      useToast.success('Cart Loaded.')
+    // ✅ Load cart from backend after login
+    async loadCartFromApi() {
+      const commonStore = useCommonStore()
+      if (!commonStore.isLoggedIn) return
+
+      try {
+        const { data } = await getCart()
+        this.items = data
+        this.saveCart()
+      } catch (err) {
+        console.error(err)
+      }
     },
 
-    addItem(product) {
+    // ✅ Add item
+    async addItem(product) {
+      const commonStore = useCommonStore()
       const useToast = useToasterStore()
-      const existing = this.items.find((item) => item.id === product.id)
       const desiredQty = product.quantity ?? 1
 
-      if (existing) {
-        if (existing.quantity + desiredQty <= product.stock) {
+      // ✅ Guest user
+      if (!commonStore.isLoggedIn) {
+        const existing = this.items.find(
+          (i) => i.product_id === product.product_id || i.product_id === product.id,
+        )
+
+        if (existing) {
           existing.quantity += desiredQty
         } else {
-          useToast.success('Only ' + product.stock + ' in stock.')
+          this.items.push({
+            product_id: product.product_id || product.id,
+            name: product.name,
+            price_at_added: product.price,
+            quantity: desiredQty,
+          })
         }
-      } else {
-        if (desiredQty <= product.stock) {
-          this.items.push({ ...product, quantity: desiredQty })
-          useToast.success('Product added to cart.')
-        } else {
-          useToast.error('Only ' + product.stock + ' in stock.')
-        }
+
+        this.saveCart()
+        useToast.success('Added to cart.')
+        return
       }
+
+      // ✅ Logged-in user
+      try {
+        const { data } = await addToCart(product.product_id || product.id, desiredQty)
+
+        const existing = this.items.find((i) => i.product_id === data.product_id)
+
+        if (existing) existing.quantity = data.quantity
+        else this.items.push(data)
+
+        this.saveCart()
+        useToast.success('Added to cart.')
+      } catch (err) {
+        useToast.error(err.response?.data?.message || 'Failed to add.')
+      }
+    },
+
+    // ✅ Update quantity
+    async updateQuantity(productId, quantity) {
+      const commonStore = useCommonStore()
+
+      // ✅ Guest user
+      if (!commonStore.isLoggedIn) {
+        const item = this.items.find((i) => i.product_id === productId)
+        if (item) item.quantity = quantity
+        this.saveCart()
+        return
+      }
+
+      // ✅ Logged-in
+      const { data } = await updateCartItem(productId, quantity)
+
+      const item = this.items.find((i) => i.product_id === productId)
+      if (item) item.quantity = data.quantity
+
       this.saveCart()
     },
 
-    removeItem(productId) {
-      const useToast = useToasterStore()
-      this.items = this.items.filter((item) => item.id !== productId)
+    // ✅ Remove item
+    async removeItem(productId) {
+      const commonStore = useCommonStore()
+
+      // ✅ Guest
+      if (!commonStore.isLoggedIn) {
+        this.items = this.items.filter((i) => i.product_id !== productId)
+        this.saveCart()
+        return
+      }
+
+      // ✅ Logged-in
+      await removeFromCart(productId)
+      this.items = this.items.filter((i) => i.product_id !== productId)
       this.saveCart()
-      useToast.success('Product removed from cart.')
     },
 
-    decreaseQuantity(productId) {
-      const item = this.items.find((i) => i.id === productId)
-      if (!item) return
-      if (item.quantity > 1) item.quantity--
-      else this.removeItem(productId)
-      this.saveCart()
-    },
+    // ✅ Clear cart
+    async clearCart() {
+      const commonStore = useCommonStore()
 
-    clearCart() {
-      const useToast = useToasterStore()
+      // ✅ Guest
+      if (!commonStore.isLoggedIn) {
+        this.items = []
+        this.saveCart()
+        return
+      }
+
+      // ✅ Logged-in
+      await apiClearCart()
       this.items = []
       this.saveCart()
-      useToast.success('Cart cleared.')
     },
   },
 })
