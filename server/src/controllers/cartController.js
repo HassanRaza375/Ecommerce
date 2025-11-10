@@ -10,6 +10,9 @@ const addToCart = async (req, res) => {
     }
 
     const cartId = await Cart.getOrCreateCart(userId);
+    console.log("pId", productId);
+    console.log("pId", quantity);
+    console.log("pId", cartId);
     await Cart.addItem(cartId, productId, quantity);
 
     const items = await Cart.getCartItems(cartId);
@@ -17,8 +20,7 @@ const addToCart = async (req, res) => {
 
     res.json(addedItem);
   } catch (err) {
-    console.error("Add to Cart Error:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: err });
   }
 };
 

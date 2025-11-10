@@ -1,5 +1,6 @@
 const pool = require("../config/db");
 
+
 async function getOrCreateCart(userId) {
   const result = await pool.query(
     "SELECT cart_id FROM carts WHERE user_id = $1 LIMIT 1",
@@ -35,7 +36,7 @@ async function addItem(cartId, productId, quantity) {
   } else {
     // 3️⃣ Insert new cart item — include price snapshot
     const productPrice = await pool.query(
-      "SELECT price FROM products WHERE product_id = $1",
+      "SELECT price FROM products WHERE id = $1",
       [productId]
     );
 
@@ -56,9 +57,13 @@ async function getCartItems(cartId) {
         ci.price_at_added,
         p.name,
         p.price,
+        p.description,
+        p.category,
+        p.image_url,
+        p.stock,
         (ci.quantity * ci.price_at_added) AS total
      FROM cart_items ci
-     JOIN products p ON ci.product_id = p.product_id
+     JOIN products p ON ci.product_id = p.id
      WHERE ci.cart_id = $1`,
     [cartId]
   );

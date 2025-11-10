@@ -1,24 +1,29 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useCartStore } from '@/stores/cart'
+import { useToasterStore } from '@/stores/toaster'
 
 // --- Initialize store
 const cartStore = useCartStore()
+const toast = useToasterStore()
 
-// --- Computed values
 const cart = computed(() => cartStore.items)
 const totalItems = computed(() => cartStore.totalItems)
 const subtotal = computed(() => cartStore.totalPrice)
 const tax = computed(() => subtotal.value * 0.07)
 const shippingLabel = computed(() => (cart.value.length === 0 ? '$0.00' : '$5.00'))
 const total = computed(() => subtotal.value + tax.value + (cart.value.length > 0 ? 5 : 0))
-// --- Methods
+
 function increase(item) {
-  cartStore.addItem(item)
+  if (item.quantity >= item.stock) {
+    toast.error('Cannot Exceed Stock Qty')
+    return
+  }
+  cartStore.updateQuantity(item.product_id, item.quantity + 1)
 }
 
 function decrease(item) {
-  cartStore.decreaseQuantity(item.id)
+  cartStore.updateQuantity(item.product_id, item.quantity - 1)
 }
 
 function remove(id) {
@@ -27,14 +32,19 @@ function remove(id) {
 
 function checkout() {
   if (!cart.value.length) {
-    alert('Your cart is empty.')
+    toast.error('Your cart is empty.')
     return
+    
   }
 
   // Example: simulate checkout process
-  alert('Checkout successful! 🎉')
+  toast.success('Checkout successful! 🎉')
   cartStore.clearCart()
 }
+onMounted(() => {
+  cartStore.init()
+  cartStore.loadCartFromApi()
+})
 </script>
 
 <template>
@@ -73,7 +83,7 @@ function checkout() {
             Total: <strong>\${{ (item.price * item.quantity).toFixed(2) }}</strong>
           </div>
 
-          <button class="remove-btn" @click="remove(item.id)">Remove</button>
+          <button class="remove-btn" @click="remove(item.product_id)">Remove</button>
         </div>
       </article>
     </section>
