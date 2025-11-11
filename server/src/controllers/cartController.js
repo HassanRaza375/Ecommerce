@@ -10,9 +10,6 @@ const addToCart = async (req, res) => {
     }
 
     const cartId = await Cart.getOrCreateCart(userId);
-    console.log("pId", productId);
-    console.log("pId", quantity);
-    console.log("pId", cartId);
     await Cart.addItem(cartId, productId, quantity);
 
     const items = await Cart.getCartItems(cartId);

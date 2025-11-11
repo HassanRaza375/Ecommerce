@@ -2,7 +2,9 @@
 import { reactive, ref } from 'vue'
 import { register } from '../../services/authService'
 import { useCommonStore } from '../../stores/common'
+import { useToasterStore } from '../../stores/toaster'
 import { useRouter } from 'vue-router'
+const toast = useToasterStore()
 const router = useRouter()
 const store = useCommonStore()
 const formData = reactive({ name: '', email: '', password: '' })
@@ -10,6 +12,15 @@ const showPassword = ref(false)
 const isloading = ref(false)
 const sumbitForm = async () => {
   isloading.value = true
+  if(
+    formData.name === '' ||
+    formData.email === '' ||
+    formData.password === ''
+  ){
+    isloading.value = false
+    toast.error('Please fill in all fields')
+    return
+  }
   const obj = {
     name: formData.name,
     email: formData.email,

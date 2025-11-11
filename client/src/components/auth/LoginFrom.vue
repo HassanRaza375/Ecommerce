@@ -4,6 +4,8 @@ import { login } from '../../services/authService'
 import { useCommonStore } from '../../stores/common'
 import { useCartStore } from '../../stores/cart'
 import { useRouter } from 'vue-router'
+import { useToasterStore } from '../../stores/toaster'
+const toast = useToasterStore()
 const router = useRouter()
 const store = useCommonStore()
 const Cartstore = useCartStore()
@@ -12,6 +14,11 @@ const isloading = ref(false)
 const formData = reactive({})
 const sumbitForm = async () => {
   isloading.value = true
+  if(formData.name === undefined || formData.password === undefined){
+    isloading.value = false
+    toast.error('Please fill in all fields')
+    return
+  }
   const obj = {
     email: formData.name,
     password: formData.password,
@@ -26,7 +33,7 @@ const sumbitForm = async () => {
     router.push('/dashboard/profile')
   } catch (err) {
     isloading.value = false
-    alert(err.message)
+    toast.error(err.message)
   }
 }
 const emit = defineEmits(['formValidation'])

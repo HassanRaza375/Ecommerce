@@ -7,7 +7,7 @@ const {
   getUserOrders,
   getOrderById,
   updateOrderStatus,
-} = require("../controllers/ordersController");
+} = require("../controllers/orderController");
 
 const { authMiddleware } = require("../middleware/authMiddleware");
 

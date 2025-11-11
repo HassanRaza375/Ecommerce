@@ -5,7 +5,6 @@ import { useToasterStore } from '@/stores/toaster'
 import { getUsersAdressesById } from '@/services/authService'
 import { createOrder } from '@/services/orderService'
 
-import Card from 'primevue/card'
 import Button from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
 import Dropdown from 'primevue/dropdown'
@@ -36,11 +35,11 @@ const total = computed(() => subtotal.value + tax.value + shipping.value)
 async function loadAddresses() {
   const res = await getUsersAdressesById(userId)
   addresses.value = res.data.addresses?.map((e) => [
-    { address: e.address_line1 },
-    { address: e.address_line2 },
+    { address: e.address_line1 , id: e.id},
+    { address: e.address_line2 , id: e.id},
   ])[0]
   console.log(
-    addresses.value.map((e) => [{ address: e.address_line1 }, { address: e.address_line2 }])[0],
+    addresses.value.map((e) => [{ address: e.address_line1 ,id: e.id }, { address: e.address_line2,id:e.id }])[0],
   )
 }
 

@@ -1,6 +1,6 @@
 // controllers/ordersController.js
-const ordersModel = require("../models/ordersModel");
-const paymentsModel = require("../models/paymentsModel");
+const ordersModel = require("../models/orderModel");
+const paymentsModel = require("../models/paymentModel");
 
 // Create new order
 const createOrder = async (req, res) => {
