@@ -2,7 +2,8 @@
 import { computed, onMounted } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { useToasterStore } from '@/stores/toaster'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // --- Initialize store
 const cartStore = useCartStore()
 const toast = useToasterStore()
@@ -31,15 +32,16 @@ function remove(id) {
 }
 
 function checkout() {
-  if (!cart.value.length) {
-    toast.error('Your cart is empty.')
-    return
-    
-  }
+  router.push('/users/my-orders')
+  // if (!cart.value.length) {
+  //   toast.error('Your cart is empty.')
+  //   return
 
-  // Example: simulate checkout process
-  toast.success('Checkout successful! 🎉')
-  cartStore.clearCart()
+  // }
+
+  // // Example: simulate checkout process
+  // toast.success('Checkout successful! 🎉')
+  // cartStore.clearCart()
 }
 onMounted(() => {
   cartStore.init()

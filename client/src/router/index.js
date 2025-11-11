@@ -117,6 +117,12 @@ const router = createRouter({
       component: () => import('../views/dashboard/wishList.vue'),
       meta: { requiresAuth: true }, // Protected
     },
+    {
+      path: '/users/my-orders',
+      name: 'orders',
+      component: () => import('../views/user/order/orderPage.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
   ],
 })
 
