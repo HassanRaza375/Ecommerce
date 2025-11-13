@@ -46,34 +46,37 @@ const createOrder = async (userId, addressId, items, totalAmount) => {
 
 // Get all orders for a user
 const getUserOrders = async (userId) => {
-  const query = `
-    SELECT * FROM orders
-    WHERE user_id = $1
-    ORDER BY created_at DESC;
-  `;
+  const query = `select od.id ,oi.quantity,oi.price,od.status,
+  adrs.full_name,adrs.phone,adrs.address_line1,adrs.address_line2,
+  adrs.city,adrs.state,adrs.postal_code,adrs.country,adrs.is_default,
+  pd.id as product_id,pd.name as product_name,pd.description,pd.category,image_url,
+  od.created_at,od.updated_at
+  from orders as od 
+  left join order_items as oi on oi.order_id = od.id
+  left join products as pd on pd.id = oi.product_id
+  left join addresses as adrs on adrs.id = od.address_id where od.user_id = $1`;
+
   const result = await pool.query(query, [userId]);
   return result.rows;
 };
 
 // Get order with items
 const getOrderById = async (userId, orderId) => {
-  const orderQuery = `
-    SELECT * FROM orders
-    WHERE id = $1 AND user_id = $2;
-  `;
-  const orderResult = await pool.query(orderQuery, [orderId, userId]);
+  const orderQuery = `select od.id ,oi.quantity,oi.price,od.status,
+  adrs.full_name,adrs.phone,adrs.address_line1,adrs.address_line2,
+  adrs.city,adrs.state,adrs.postal_code,adrs.country,adrs.is_default,
+  pd.id as product_id,pd.name as product_name,pd.description,pd.category,image_url,
+  od.created_at,od.updated_at
+  from orders as od 
+  left join order_items as oi on oi.order_id = od.id
+  left join products as pd on pd.id = oi.product_id
+  left join addresses as adrs on adrs.id = od.address_id where od.user_id = $1 and oi.order_id = $2`;
 
-  if (orderResult.rows.length === 0) return null;
+  console.log("Fetching order for user:", userId, "order ID:", orderId);
 
-  const itemsQuery = `
-    SELECT * FROM order_items WHERE order_id = $1;
-  `;
-  const itemsResult = await pool.query(itemsQuery, [orderId]);
+  const orderResult = await pool.query(orderQuery, [userId, orderId]);
 
-  return {
-    ...orderResult.rows[0],
-    items: itemsResult.rows,
-  };
+  return orderResult.rows;
 };
 
 // Update order status

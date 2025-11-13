@@ -1,5 +1,5 @@
 <script setup>
-import { ref,computed ,defineAsyncComponent } from 'vue'
+import { ref, computed, defineAsyncComponent } from 'vue'
 import { useCommonStore } from '../../stores/common'
 import { useCartStore } from '../../stores/cart'
 import { RouterLink, useRouter } from 'vue-router'
@@ -88,7 +88,7 @@ const changeLanguage = () => {
         <div id="navbarBasicExample" class="navbar-menu">
           <div class="navbar-start">
             <RouterLink v-for="(item, i) in links" class="navbar-item" :to="item.path" :key="i">
-              {{item.name}}
+              {{ item.name }}
             </RouterLink>
           </div>
 
@@ -141,6 +141,11 @@ const changeLanguage = () => {
                       >
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
+                        :to="`/users/my-orders/${userId}`"
+                        ><i class="pi pi-users"></i>My Orders</RouterLink
+                      >
+                      <RouterLink
+                        class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         to="/dashboard/profile"
                         ><i class="pi pi-user"></i> {{ t('profile') }}</RouterLink
                       >
@@ -183,10 +188,10 @@ header {
   position: absolute;
   z-index: 1000;
 }
-.navbar{
+.navbar {
   z-index: unset;
 }
-header{
+header {
   z-index: unset;
 }
 </style>

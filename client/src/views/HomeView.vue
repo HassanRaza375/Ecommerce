@@ -1,7 +1,6 @@
 <script setup>
 import {
   ref,
-  computed,
   onBeforeMount,
   onMounted,
   onBeforeUpdate,
@@ -11,20 +10,6 @@ import {
 } from 'vue'
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
 import { getProducts } from '../services/productService'
-// let firstName = ref('John')
-// let lastName = ref('Doe')
-// const imagsSlider = reactive([
-//   'https://front.satjapan.info/assets/images/new-bannars/homepage-5.webp',
-//   'https://front.satjapan.info/assets/images/new-bannars/homepage-one.webp',
-//   'https://front.satjapan.info/assets/images/new-bannars/homepage-3.webp',
-// ])
-// const Slider = defineAsyncComponent({
-//   loader: () => import('../components/Slider.vue'),
-//   loadingComponent: LoadingSpinner,
-//   // errorComponent: () => import('./ErrorMessage.vue'),
-//   delay: 200, // wait 200ms before showing loading component
-//   timeout: 5000, // fail after 5s
-// })
 const ProductCard = defineAsyncComponent({
   loader: () => import('../components/ProductCard.vue'),
   loadingComponent: LoadingSpinner,
@@ -38,11 +23,6 @@ const CategoryTabs = defineAsyncComponent({
   // errorComponent: () => import('./ErrorMessage.vue'),
   delay: 200, // wait 200ms before showing loading component
   timeout: 5000, // fail after 5s
-})
-
-const fullname = computed(() => {
-  console.log('Recomputing fullname')
-  return `${firstName.value} ${lastName.value}`
 })
 
 let productData = ref({})

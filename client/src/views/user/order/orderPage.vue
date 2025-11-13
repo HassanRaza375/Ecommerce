@@ -9,7 +9,8 @@ import Button from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
 import Dropdown from 'primevue/dropdown'
 import Divider from 'primevue/divider'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const cartStore = useCartStore()
 const toast = useToasterStore()
 
@@ -76,6 +77,7 @@ async function placeOrder() {
 
     toast.success('Order placed successfully!')
     cartStore.clearCart()
+    router.push('/thank-you')
   } catch (error) {
     toast.error(error)
   }

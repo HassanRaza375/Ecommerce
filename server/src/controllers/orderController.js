@@ -52,7 +52,6 @@ const getOrderById = async (req, res) => {
   try {
     const userId = req.user.id;
     const orderId = req.params.id;
-
     const order = await ordersModel.getOrderById(userId, orderId);
 
     if (!order) return res.status(404).json({ message: "Order not found" });

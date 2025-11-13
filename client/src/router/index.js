@@ -123,6 +123,24 @@ const router = createRouter({
       component: () => import('../views/user/order/orderPage.vue'),
       meta: { requiresAuth: true }, // Protected
     },
+    {
+      path: '/users/my-orders/:id',
+      name: 'my-orders',
+      component: () => import('../views/user/order/myOrders.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
+      path: '/users/my-orders/order-detail/:id',
+      name: 'order details',
+      component: () => import('../views/user/order/OrderDetails.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
+    {
+      path: '/thank-you',
+      name: 'thank-you',
+      component: () => import('../views/user/order/thankYou.vue'),
+      meta: { requiresAuth: true }, // Protected
+    },
   ],
 })
 
