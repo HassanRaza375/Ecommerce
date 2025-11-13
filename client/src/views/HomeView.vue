@@ -90,7 +90,8 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <section class="container py-3">
-      <div v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }">
+      <!-- v-motion :initial="{ opacity: 0, y: 20 }" :enter="{ opacity: 1, y: 0 }" -->
+      <div>
         <div class="box mt-2">
           <!-- <Slider :fullname="fullname" :Images="imagsSlider" /> -->
            <section class="hero-dark">
