@@ -8,3 +8,28 @@
 # DB_PASS='5121472'
 # DB_PORT='5432'
 # JWT_SECRET='f1e2a4d8c9b7e6a1d3f5b6c7d9e8f1a2c3d4b5a6f7e8d9c0b1a2d3e4f5b6c7d8'
+
+
+# db.js
+# // src/config/db.js
+# const { Pool } = require("pg");
+# require("dotenv").config();
+
+# const pool = new Pool({
+#  user: process.env.DB_USER,
+#  host: process.env.DB_HOST,
+#  database: process.env.DB_NAME,
+#  password: process.env.DB_PASS,
+#  port: process.env.DB_PORT,
+# });
+# pool
+#  .connect()
+#  .then(() => {
+#    console.log("✅ Connected to PostgreSQL from index.js");
+#  })
+#  .catch((err) => {
+#    console.error("❌ PostgreSQL connection error in index.js:", err.message);
+#    process.exit(1); // Optional: Stop server if DB fails to connect
+#  });
+# module.exports = pool;
+
