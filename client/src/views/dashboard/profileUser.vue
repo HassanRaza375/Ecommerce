@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue'
 import { userById, deleteById } from '../../services/authService'
 import { useRoute, useRouter } from 'vue-router'
 import moment from 'moment'
+import { useToasterStore } from '@/stores/toaster'
+const toast = useToasterStore()
 const $route = useRoute()
 const $router = useRouter()
 const id = ref(null)
@@ -23,7 +25,7 @@ onMounted(async () => {
 const DeleteAccount = async (userId) => {
   const { data } = await deleteById(userId)
   if (data.message === 'user deleted') {
-    alert('Account Deleted Successfully')
+    toast.success('Account Deleted Successfully')
     $router.push('/dashboard/users')
   }
 }

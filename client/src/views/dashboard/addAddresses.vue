@@ -115,9 +115,11 @@
 
 <script setup>
 // import moment from 'moment'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { addAddressById } from '../../services/authService'
 import { useRouter, useRoute } from 'vue-router'
+import { useToasterStore } from '@/stores/toaster'
+const toast = useToasterStore()
 const router = useRouter()
 const route = useRoute()
 const Item = ref({
@@ -140,14 +142,13 @@ const sumbitForm = async () => {
     const obj = { ...Item.value }
     const { data } = await addAddressById(u_id.value, obj)
     if(Object.keys(data).length === 0){
-      alert('Address Not Added')
+      toast.error('Address Not Added')
     }else{
-      alert('Address added Successfully')
+      toast.success('Address added Successfully')
     }
     isloading.value = false
   } catch (err) {
-    console.log('Error', err)
-    alert('Error Submitting Form')
+    toast.error(err)
     isloading.value = false
   }
 }

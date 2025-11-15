@@ -110,6 +110,8 @@
 import { ref, onMounted } from 'vue'
 import { getUsersAdressesById, updateUserAddressById } from '../../services/authService'
 import { useRouter, useRoute } from 'vue-router'
+import { useToasterStore } from '@/stores/toaster'
+const toast = useToasterStore()
 const router = useRouter()
 const route = useRoute()
 const Item = ref({
@@ -131,12 +133,11 @@ const sumbitForm = async () => {
     const { data } = await updateUserAddressById(u_id.value, obj)
     if (data.data.id) {
       await getData()
-      alert('Address Updated Successfully')
+      toast.success('Address Updated Successfully')
     }
     isloading.value = false
   } catch (err) {
-    console.log('Error', err)
-    alert('Error Submitting Form')
+    toast.error(err)
     isloading.value = false
   }
 }

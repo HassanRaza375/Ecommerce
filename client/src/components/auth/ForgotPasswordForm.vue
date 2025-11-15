@@ -2,6 +2,8 @@
 import { reactive, ref } from 'vue'
 import { ChangePassword } from '../../services/authService'
 import { useRouter, useRoute } from 'vue-router'
+import { useToasterStore } from '@/stores/toaster'
+const toast = useToasterStore()
 const router = useRouter()
 const route = useRoute()
 const formData = reactive({ email: '', password: '', confirmPassword: '' })
@@ -27,7 +29,7 @@ const sumbitForm = async () => {
     router.push('/login')
   } catch (err) {
     isloading.value = false
-    alert(err.message)
+    toast.error(err.message)
   }
 }
 </script>

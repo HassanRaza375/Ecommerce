@@ -81,15 +81,6 @@ const getAddresses = async () => {
   const { data } = await getAllUsersAdresses()
   users.value = data.addresses.length > 0 ? data.addresses : []
 }
-// const deleteAddress = async (userId) => {
-//   alert(userId)
-//   if (userId) return
-//   const { data } = await deleteAddressById(userId)
-//   if (data.message === 'user addresses deleted') {
-//     alert('User Address Deleted Successfully')
-//     await getAddresses()
-//   }
-// }
 </script>
 
 <style scoped></style>
