@@ -41,6 +41,12 @@ function toggleDropdown() {
 const changeLanguage = () => {
   locale.value = currentLang.value
 }
+const isBurgerOpen = ref(false)
+
+const toggleBurger = () => {
+  isBurgerOpen.value = !isBurgerOpen.value
+}
+
 </script>
 <template>
   <header>
@@ -74,9 +80,10 @@ const changeLanguage = () => {
           <a
             role="button"
             class="navbar-burger"
+            :class="{ 'is-active': isBurgerOpen }"
             aria-label="menu"
             aria-expanded="false"
-            data-target="navbarBasicExample"
+            @click="toggleBurger"
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -85,9 +92,9 @@ const changeLanguage = () => {
           </a>
         </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isBurgerOpen }">
           <div class="navbar-start">
-            <RouterLink v-for="(item, i) in links" class="navbar-item" :to="item.path" :key="i">
+            <RouterLink v-for="(item, i) in links" class="navbar-item" :to="item.path" :key="i" @click="isBurgerOpen = false">
               {{ item.name }}
             </RouterLink>
           </div>
