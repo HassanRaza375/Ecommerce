@@ -10,6 +10,8 @@ import {
 } from 'vue'
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
 import { getProducts } from '../services/productService'
+import { useToasterStore } from '@/stores/toaster'
+const toast = useToasterStore()
 const ProductCard = defineAsyncComponent({
   loader: () => import('../components/ProductCard.vue'),
   loadingComponent: LoadingSpinner,
@@ -24,29 +26,35 @@ const CategoryTabs = defineAsyncComponent({
   delay: 200, // wait 200ms before showing loading component
   timeout: 5000, // fail after 5s
 })
-
+let is_loading = ref(false)
 let productData = ref({})
 let filteredCategories=ref([])
 const getProductData = async () => {
-  const { data } = await getProducts()
-  let categories = []
-  if (data.length === 0) {
-    productData.value = []
-    return
+  is_loading.value = true
+  try{
+    const { data } = await getProducts()
+    let categories = []
+    if (data.length === 0) {
+      productData.value = []
+      return
+    }
+    data.forEach((e) => {
+      categories.push(e.category)
+    })
+    filteredCategories.value = [...new Set(categories)]
+    let filteredProducts = []
+    filteredCategories.value.forEach((e) => {
+      let p = data.filter((p) => p.category === e)
+      let object = { title: e, productList: [...p] }
+      filteredProducts.push(object)
+    })
+    productData.value = filteredProducts
+  }catch(err){
+    toast.error(err)
+    is_loading.value = false
+  }finally{
+    is_loading.value = false
   }
-  data.forEach((e) => {
-    categories.push(e.category)
-  })
-  filteredCategories.value = [...new Set(categories)]
-  let filteredProducts = []
-  filteredCategories.value.forEach((e) => {
-    let p = data.filter((p) => p.category === e)
-    let object = { title: e, productList: [...p] }
-    filteredProducts.push(object)
-  })
-
-  productData.value = filteredProducts
-  console.log(productData.value)
 }
 
 onBeforeMount(() => {
@@ -89,7 +97,9 @@ onBeforeUnmount(() => {
         <CategoryTabs :categories="filteredCategories"/>
       </div>
     </section>
-    <ProductCard :data="productData"/>
+    <section class="container">
+      <ProductCard :data="productData" :is_loading="is_loading"/>
+    </section>
   </div>
 </template>
 <style scoped>

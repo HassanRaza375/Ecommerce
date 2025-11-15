@@ -53,7 +53,7 @@
       <Button label="Reset" @click="RestSearch" />
     </div>
 
-    <ProductCard :data="productData" />
+    <ProductCard :data="productData" :is_loading="is_loading"/>
   </div>
 </template>
 
@@ -96,7 +96,7 @@ let productData = ref([])
 let filteredCategories = ref([])
 let TotalProducts = ref(0)
 const categories = ref([])
-
+let is_loading = ref(false)
 // Methods
 async function searchProductQuery() {
   try {
@@ -105,6 +105,7 @@ async function searchProductQuery() {
     }
     const { data } = await searchProducts({ params: filters.value })
     getProductData(data)
+    is_loading.value = false
     if (!restBool.value) {
       router.replace({
         name: 'search',
@@ -176,6 +177,7 @@ function buildFiltersFromQuery(query) {
 
 onMounted(async () => {
   // await getProductData()
+  is_loading.value = true
   filters.value = buildFiltersFromQuery(route.query)
   await getAllCatgories()
   searchProductQuery()

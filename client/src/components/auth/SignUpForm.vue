@@ -28,6 +28,7 @@ const sumbitForm = async () => {
   }
   try {
     const { data } = await register(obj)
+    toast.success('Registration successful')
     isloading.value = false
     formData.name = ''
     formData.email = ''
@@ -38,7 +39,7 @@ const sumbitForm = async () => {
     router.push('/dashboard/users')
   } catch (err) {
     isloading.value = false
-    alert(err.message)
+    toast.error(err.message)
   }
 }
 </script>

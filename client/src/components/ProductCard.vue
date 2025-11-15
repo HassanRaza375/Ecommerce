@@ -11,12 +11,13 @@ const useToast = useToasterStore()
 const cartStore = useCartStore()
 const commonStore = useCommonStore()
 const router = useRouter()
-defineProps({
-  data: {
-    type: Object,
-    required: true,
-  },
+const props = defineProps({
+  data: { type: Object, required: true },
+  minimal: { type: Boolean, default: false },
+  is_loading: { type: Boolean, default: true },
+  count: { type: Number, default: 6 },
 })
+
 let userId = JSON.parse(localStorage.getItem('userId'))
 console.log(commonStore.wishListIds)
 
@@ -62,12 +63,39 @@ const HandleWishList = (product) => {
 }
 
 onMounted(async () => {
-  await fetchWishlist()
+  if(userId){
+    await fetchWishlist()
+  } 
 })
 </script>
 <template>
-  <div>
-    <section class="product-section container" v-for="product in data" :key="product.title">
+   <div v-if="props.is_loading">
+     <div class="product-section">
+    <div class="skeleton-title"></div>
+    <div class="product-grid">
+      <div class="product-card-skeleton" v-for="i in count" :key="i">
+        <div class="image-wrapper-skeleton skeleton"></div>
+          <div class="wishlist-skeleton skeleton"></div>
+
+          <div class="product-info-skeleton">
+            <div class="skeleton-line name skeleton"></div>
+            <div class="skeleton-line desc skeleton"></div>
+            <div class="skeleton-line desc short skeleton"></div>
+            <div class="skeleton-line skeleton"></div>
+            <div class="skeleton-line small skeleton"></div>
+
+            <div class="button-row">
+              <div class="skeleton-button skeleton"></div>
+              <div class="skeleton-button skeleton"></div>
+            </div>
+          </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-else>
+    <section class="product-section container" v-for="product in props.data" :key="product.title">
       <h2 class="section-title">{{ capitalize(product.title) }}</h2>
       <div class="product-grid">
         <!-- Product Card -->
@@ -112,6 +140,125 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.product-card-skeleton {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: staggerFade 0.4s forwards;
+  animation-delay: calc(var(--i) * 0.08s);
+}
+/* Skeleton Base */
+.skeleton {
+  background: #e2e2e2;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.5) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Container */
+.product-card-skeleton {
+  background: #fff;
+  border-radius: 10px;
+  padding-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Image */
+.image-wrapper-skeleton {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px 10px 0 0;
+}
+.image-wrapper-skeleton.skeleton {
+  background: #dcdcdc;
+}
+
+/* Wishlist Icon */
+.wishlist-skeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+/* Product Info */
+.product-info-skeleton {
+  padding: 15px;
+}
+
+/* Lines */
+.skeleton-line {
+  height: 14px;
+  margin: 10px 0;
+}
+
+.skeleton-line.small {
+  width: 60%;
+}
+
+.skeleton-line.name {
+  width: 80%;
+  height: 18px;
+}
+
+.skeleton-line.desc {
+  width: 100%;
+}
+
+.skeleton-line.desc.short {
+  width: 70%;
+}
+
+/* Buttons */
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.skeleton-button {
+  flex: 1;
+  height: 40px;
+  border-radius: 6px;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: #3a3a3a;
+  }
+  .product-card-skeleton {
+    background: #1c1c1c;
+  }
+}
+
+@keyframes staggerFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .image-wrapper {
   position: relative;
 }
