@@ -18,13 +18,13 @@ const isOpen = ref(false)
 const currentLang = ref(locale.value)
 const userId = JSON.parse(localStorage.getItem('userId')) || ''
 const links = computed(() => [
-  { name: 'Home', path: '/', show: 'customer' },
-  { name: 'About', path: '/about', show: 'customer' },
-  { name: 'Search', path: '/search', show: 'customer' },
+  { name: 'home', path: '/', show: 'customer' },
+  { name: 'about', path: '/about', show: 'customer' },
+  { name: 'search', path: '/search', show: 'customer' },
   { name: `Cart(${cartStore.totalItems})`, path: '/cart', show: 'customer' },
-  { name: 'Task', path: '/Todo', show: 'admin' },
-  { name: 'Localization', path: '/Localization', show: 'admin' },
-  { name: 'DynmaicComponent', path: '/DynmaicComponent', show: 'admin' },
+  { name: 'task', path: '/Todo', show: 'admin' },
+  { name: 'localization', path: '/Localization', show: 'admin' },
+  { name: 'dynmaiccomponent', path: '/DynmaicComponent', show: 'admin' },
 ])
 const UserCart = defineAsyncComponent({
   loader: () => import('../../components/UserCart.vue'),
@@ -55,7 +55,7 @@ const toggleBurger = () => {
     <div>
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <a class="navbar-item" to="/">
+          <RouterLink class="navbar-item" to="/">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="360"
@@ -133,7 +133,7 @@ const toggleBurger = () => {
                 </text>
               </g>
             </svg>
-          </a>
+          </RouterLink>
 
           <a
             role="button"
@@ -160,8 +160,7 @@ const toggleBurger = () => {
               :to="item.path"
               :key="i"
               @click="isBurgerOpen = false"
-            >
-              {{ item.name }}
+              >{{ item.name.includes('Cart(') ? item.name : t(item.name) }}
             </RouterLink>
           </div>
 
@@ -201,26 +200,26 @@ const toggleBurger = () => {
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         :to="`/dashboard/wishList/${userId}`"
                         @click="toggleDropdown"
-                        ><i class="pi pi-list-check"></i>WishList</RouterLink
+                        ><i class="pi pi-list-check"></i>{{ t('wishlist') }}</RouterLink
                       >
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         :to="`/dashboard/addressBook/${userId}`"
                         @click="toggleDropdown"
-                        ><i class="pi pi-building-columns"></i>Address Book</RouterLink
+                        ><i class="pi pi-building-columns"></i>{{ t('addressBook') }}</RouterLink
                       >
                       <RouterLink
                         v-if="store.role === 'admin'"
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         to="/dashboard/users"
                         @click="toggleDropdown"
-                        ><i class="pi pi-users"></i>All Users</RouterLink
+                        ><i class="pi pi-users"></i>{{ t('allUsers') }}</RouterLink
                       >
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         :to="`/users/my-orders/${userId}`"
                         @click="toggleDropdown"
-                        ><i class="pi pi-users"></i>My Orders</RouterLink
+                        ><i class="pi pi-users"></i>{{ t('myOrders') }}</RouterLink
                       >
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"

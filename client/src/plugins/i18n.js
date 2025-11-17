@@ -1,4 +1,5 @@
 // src/i18n.js
+import { addToCart } from '@/services/cartService'
 import { createI18n } from 'vue-i18n'
 
 const messages = {
@@ -11,7 +12,7 @@ const messages = {
     about: 'About',
     search: 'Search',
     cart: 'Cart',
-    localization: 'Task Localization',
+    localization: 'Localization',
     startShopping: 'Start Shopping',
     myOrders: 'My Orders',
     profile: 'Profile',
@@ -19,6 +20,11 @@ const messages = {
     wishlist: 'Wishlist',
     logout: 'Logout',
     fillThese: 'Fill these fields',
+    dynmaiccomponent: 'Dynamic Component',
+    addressBook: 'Address Book',
+    task: 'Task',
+    addToCart: 'Add to Cart',
+    viewDetails: 'View Details',
   },
   fr: {
     login: 'Connexion',
@@ -37,6 +43,11 @@ const messages = {
     wishlist: 'Liste de souhaits',
     logout: 'Se déconnecter',
     fillThese: 'Remplissez ces champs',
+    dynmaiccomponent: 'Composant dynamique',
+    addressBook: 'Carnet d\'adresses',
+    task: 'Tâche',
+    addToCart: 'Ajouter au panier',
+    viewDetails: 'Voir les détails',
   },
 }
 

@@ -7,6 +7,8 @@ import { useRouter } from 'vue-router'
 import { removeSpaces } from '@/utils/removeSpaces'
 import { createWishList, deleteWishListById, getWishList } from '../services/wishList'
 import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+let { t } = useI18n()
 const useToast = useToasterStore()
 const cartStore = useCartStore()
 const commonStore = useCommonStore()
@@ -28,7 +30,7 @@ const showDetail = (category, id) => {
 const addToWishList = async (product) => {
   try {
     const { data } = await createWishList(userId, { productId: product.id })
-    commonStore.addWishListId(product.id) 
+    commonStore.addWishListId(product.id)
     useToast.success(data.message)
   } catch (error) {
     useToast.error(error?.response?.data?.message)
@@ -38,7 +40,7 @@ const addToWishList = async (product) => {
 const removeItem = async (product) => {
   try {
     await deleteWishListById(userId, { productId: product.id })
-    commonStore.removeWishListId(product.id) 
+    commonStore.removeWishListId(product.id)
     useToast.success('Item removed from wishlist')
   } catch (err) {
     useToast.error(err?.response?.data?.message)
@@ -63,18 +65,18 @@ const HandleWishList = (product) => {
 }
 
 onMounted(async () => {
-  if(userId){
+  if (userId) {
     await fetchWishlist()
-  } 
+  }
 })
 </script>
 <template>
-   <div v-if="props.is_loading">
-     <div class="product-section">
-    <div class="skeleton-title"></div>
-    <div class="product-grid">
-      <div class="product-card-skeleton" v-for="i in count" :key="i">
-        <div class="image-wrapper-skeleton skeleton"></div>
+  <div v-if="props.is_loading">
+    <div class="product-section">
+      <div class="skeleton-title"></div>
+      <div class="product-grid">
+        <div class="product-card-skeleton" v-for="i in count" :key="i">
+          <div class="image-wrapper-skeleton skeleton"></div>
           <div class="wishlist-skeleton skeleton"></div>
 
           <div class="product-info-skeleton">
@@ -89,7 +91,7 @@ onMounted(async () => {
               <div class="skeleton-button skeleton"></div>
             </div>
           </div>
-      </div>
+        </div>
       </div>
     </div>
   </div>
@@ -126,10 +128,10 @@ onMounted(async () => {
             <p class="product-stock">{{ productCard.stock }}</p>
             <div class="product-buttons">
               <button class="btn add-cart" @click="cartStore.addItem(productCard)">
-                Add to Cart
+                {{ t('addToCart') }}
               </button>
               <button class="btn view-detail" @click="showDetail(product.title, productCard.id)">
-                View Details
+                {{ t('viewDetails') }}
               </button>
             </div>
           </div>
@@ -155,19 +157,23 @@ onMounted(async () => {
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .skeleton::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,0.5) 50%,
-    rgba(255,255,255,0) 100%
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
@@ -178,7 +184,7 @@ onMounted(async () => {
   background: #fff;
   border-radius: 10px;
   padding-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Image */
@@ -282,7 +288,9 @@ onMounted(async () => {
 .wishlist-icon.active i {
   color: red;
   transform: scale(1.2);
-  transition: transform 0.2s, color 0.2s;
+  transition:
+    transform 0.2s,
+    color 0.2s;
 }
 
 .wishlist-icon:hover {
