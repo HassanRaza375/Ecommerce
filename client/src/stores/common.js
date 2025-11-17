@@ -4,6 +4,8 @@ export const useCommonStore = defineStore('common', {
   state: () => ({
     isLoggedIn: localStorage.getItem('token') ? true : false,
     wishListIds: JSON.parse(localStorage.getItem('wishListIds') || '[]'),
+    role: 'customer',
+    user: null,
   }),
 
   actions: {
@@ -18,6 +20,9 @@ export const useCommonStore = defineStore('common', {
       localStorage.removeItem('user')
       localStorage.removeItem('userId')
       localStorage.removeItem('wishListIds')
+      this.user = null
+      this.role = 'customer'
+      this.wishListIds = []
     },
 
     addWishListId(ids) {
@@ -32,6 +37,10 @@ export const useCommonStore = defineStore('common', {
     removeWishListId(id) {
       this.wishListIds = this.wishListIds.filter((i) => i !== id)
       localStorage.setItem('wishListIds', JSON.stringify(this.wishListIds))
+    },
+    setUser(data) {
+      this.user = data
+      this.role = data.role
     },
   },
 })

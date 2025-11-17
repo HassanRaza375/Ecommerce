@@ -4,6 +4,8 @@ import { register } from '../../services/authService'
 import { useCommonStore } from '../../stores/common'
 import { useToasterStore } from '../../stores/toaster'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const toast = useToasterStore()
 const router = useRouter()
 const store = useCommonStore()
@@ -12,11 +14,7 @@ const showPassword = ref(false)
 const isloading = ref(false)
 const sumbitForm = async () => {
   isloading.value = true
-  if(
-    formData.name === '' ||
-    formData.email === '' ||
-    formData.password === ''
-  ){
+  if (formData.name === '' || formData.email === '' || formData.password === '') {
     isloading.value = false
     toast.error('Please fill in all fields')
     return
@@ -47,14 +45,14 @@ const sumbitForm = async () => {
   <div class="is-flex is-justify-content-center is-align-items-center hero is-fullheight">
     <div class="box">
       <div class="mb-2">
-        <h1 class="title has-text-centered">Sign Up</h1>
+        <h1 class="title has-text-centered">{{ t('signup') }}</h1>
       </div>
       <div class="mb-2">
         <input v-model="formData.name" class="input" type="text" placeholder="Name" />
       </div>
       <div class="field mb-2">
         <p class="control has-icons-left has-icons-right">
-          <input v-model="formData.email" class="input" type="email" placeholder="Email" />
+          <input v-model="formData.email" class="input" type="email" :placeholder="t('email')" />
           <span class="icon is-small is-left">
             <i class="icon-svg is-flex">
               <svg
@@ -81,7 +79,7 @@ const sumbitForm = async () => {
             v-model="formData.password"
             class="input"
             :type="showPassword ? 'password' : 'text'"
-            placeholder="Password"
+            :placeholder="t('password')"
           />
           <span class="icon is-small is-left" @click="showPassword = !showPassword">
             <i class="icon-svg is-flex">
@@ -102,7 +100,7 @@ const sumbitForm = async () => {
             </i>
           </span>
           <span class="icon is-small is-right is-clickable" @click="showPassword = !showPassword">
-            <i class="icon-svg is-flex" v-if="!showPassword">
+            <i class="icon-svg is-flex" v-if="showPassword">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

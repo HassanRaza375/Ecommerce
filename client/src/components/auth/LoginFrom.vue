@@ -5,6 +5,9 @@ import { useCommonStore } from '../../stores/common'
 import { useCartStore } from '../../stores/cart'
 import { useRouter } from 'vue-router'
 import { useToasterStore } from '../../stores/toaster'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const toast = useToasterStore()
 const router = useRouter()
 const store = useCommonStore()
@@ -26,9 +29,12 @@ const sumbitForm = async () => {
   try {
     const { data } = await login(obj)
     isloading.value = false
-    store.Login(data.token)
+    store.Login(data?.token)
+    store.setUser(data?.user)
     localStorage.setItem('user', JSON.stringify(data?.user))
     localStorage.setItem('userId', data?.user?.id)
+    console.log(store.user);
+    console.log(store.role);
     await Cartstore.loadCartFromApi()
     router.push('/dashboard/profile')
   } catch (err) {
@@ -43,11 +49,11 @@ const emit = defineEmits(['formValidation'])
     <div class="box">
       <form @submit.prevent="emit('formValidation', formData)">
         <div class="mb-2">
-          <h1 class="title has-text-centered">Login</h1>
+          <h1 class="title has-text-centered">{{ t('login') }}</h1>
         </div>
         <div class="field mb-2">
           <p class="control has-icons-left has-icons-right">
-            <input v-model="formData.name" class="input" type="email" placeholder="Email" />
+            <input v-model="formData.name" class="input" type="email" :placeholder="t('email')" />
             <span class="icon is-small is-left">
               <i class="icon-svg is-flex">
                 <svg
@@ -74,7 +80,7 @@ const emit = defineEmits(['formValidation'])
               v-model="formData.password"
               class="input"
               :type="showPassword ? 'text' : 'password'"
-              placeholder="Password"
+              :placeholder="t('password')"
             />
             <span class="icon is-small is-left">
               <i class="icon-svg is-flex">
@@ -141,7 +147,7 @@ const emit = defineEmits(['formValidation'])
             :class="isloading === true ? 'is-loading button is-primary' : 'button is-primary'"
             @click="sumbitForm"
           >
-            Login
+            {{ t('login') }}
           </button>
           <button class="button is-info" @click="router.push('/')">Go Back</button>
         </div>

@@ -11,6 +11,8 @@ import {
 import LoadingSpinner from '../components/layout/LoadingSpinner.vue'
 import { getProducts } from '../services/productService'
 import { useToasterStore } from '@/stores/toaster'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const toast = useToasterStore()
 const ProductCard = defineAsyncComponent({
   loader: () => import('../components/ProductCard.vue'),
@@ -87,7 +89,7 @@ onBeforeUnmount(() => {
             <div class="hero-content">
               <h1>Luxury Meets Affordability</h1>
               <p>Premium products curated specially for you.</p>
-              <button class="btn shop">Start Shopping</button>
+              <button class="btn shop" @click="router.push('/search')">Start Shopping</button>
             </div>
           </section>
         </div>

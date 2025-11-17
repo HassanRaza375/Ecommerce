@@ -18,13 +18,13 @@ const isOpen = ref(false)
 const currentLang = ref(locale.value)
 const userId = JSON.parse(localStorage.getItem('userId')) || ''
 const links = computed(() => [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Search', path: '/search' },
-  { name: `Cart(${cartStore.totalItems})`, path: '/cart' },
-  { name: 'Task', path: '/Todo' },
-  { name: 'Localization', path: '/Localization' },
-  { name: 'DynmaicComponent', path: '/DynmaicComponent' },
+  { name: 'Home', path: '/', show: 'customer' },
+  { name: 'About', path: '/about', show: 'customer' },
+  { name: 'Search', path: '/search', show: 'customer' },
+  { name: `Cart(${cartStore.totalItems})`, path: '/cart', show: 'customer' },
+  { name: 'Task', path: '/Todo', show: 'admin' },
+  { name: 'Localization', path: '/Localization', show: 'admin' },
+  { name: 'DynmaicComponent', path: '/DynmaicComponent', show: 'admin' },
 ])
 const UserCart = defineAsyncComponent({
   loader: () => import('../../components/UserCart.vue'),
@@ -33,8 +33,10 @@ const UserCart = defineAsyncComponent({
 })
 const Logout = () => {
   store.LogOut()
+  toggleDropdown()
   router.push('/Login')
 }
+
 function toggleDropdown() {
   isOpen.value = !isOpen.value
 }
@@ -45,8 +47,8 @@ const isBurgerOpen = ref(false)
 
 const toggleBurger = () => {
   isBurgerOpen.value = !isBurgerOpen.value
+  toggleDropdown()
 }
-
 </script>
 <template>
   <header>
@@ -54,33 +56,83 @@ const toggleBurger = () => {
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
           <a class="navbar-item" to="/">
-          <svg xmlns="http://www.w3.org/2000/svg" width="360" height="80" viewBox="0 0 360 80" role="img" aria-labelledby="title desc">
-            <title id="title">E-Shop Logo</title>
-            <desc id="desc">A shopping cart with a box inside and the word "E-Shop" — modern e-commerce logo.</desc>
-            <defs>
-              <linearGradient id="g" x1="0" x2="1">
-                <stop offset="0" stop-color="#4f46e5"/>
-                <stop offset="1" stop-color="#06b6d4"/>
-              </linearGradient>
-              <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.12" />
-              </filter>
-            </defs>
-            <g transform="translate(10,10)">
-              <rect x="0" y="0" width="60" height="60" rx="12" fill="url(#g)" filter="url(#shadow)"/>
-              <g transform="translate(10,12)" fill="#fff">
-                <path d="M6 2h24l-3 12H9z" opacity="0.95"/>
-                <rect x="8" y="3" width="8" height="6" rx="1" fill="#fff" stroke="rgba(0,0,0,0.06)" stroke-width="0.6"/>
-                <path d="M2 2 L4 2 L8 16" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <circle cx="12" cy="22" r="3" fill="#fff"/>
-                <circle cx="26" cy="22" r="3" fill="#fff"/>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="360"
+              height="80"
+              viewBox="0 0 360 80"
+              role="img"
+              aria-labelledby="title desc"
+            >
+              <title id="title">E-Shop Logo</title>
+              <desc id="desc">
+                A shopping cart with a box inside and the word "E-Shop" — modern e-commerce logo.
+              </desc>
+              <defs>
+                <linearGradient id="g" x1="0" x2="1">
+                  <stop offset="0" stop-color="#4f46e5" />
+                  <stop offset="1" stop-color="#06b6d4" />
+                </linearGradient>
+                <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.12" />
+                </filter>
+              </defs>
+              <g transform="translate(10,10)">
+                <rect
+                  x="0"
+                  y="0"
+                  width="60"
+                  height="60"
+                  rx="12"
+                  fill="url(#g)"
+                  filter="url(#shadow)"
+                />
+                <g transform="translate(10,12)" fill="#fff">
+                  <path d="M6 2h24l-3 12H9z" opacity="0.95" />
+                  <rect
+                    x="8"
+                    y="3"
+                    width="8"
+                    height="6"
+                    rx="1"
+                    fill="#fff"
+                    stroke="rgba(0,0,0,0.06)"
+                    stroke-width="0.6"
+                  />
+                  <path
+                    d="M2 2 L4 2 L8 16"
+                    stroke="#fff"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                  />
+                  <circle cx="12" cy="22" r="3" fill="#fff" />
+                  <circle cx="26" cy="22" r="3" fill="#fff" />
+                </g>
               </g>
-            </g>
-            <g transform="translate(90,44)">
-              <text x="0" y="-8" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-size="28" font-weight="700" fill="#111827">E-Shop</text>
-              <text x="0" y="16" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-size="12" fill="#6b7280">modern online store</text>
-            </g>
-          </svg>
+              <g transform="translate(90,44)">
+                <text
+                  x="0"
+                  y="-8"
+                  font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
+                  font-size="28"
+                  font-weight="700"
+                  fill="#111827"
+                >
+                  E-Shop
+                </text>
+                <text
+                  x="0"
+                  y="16"
+                  font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
+                  font-size="12"
+                  fill="#6b7280"
+                >
+                  modern online store
+                </text>
+              </g>
+            </svg>
           </a>
 
           <a
@@ -100,7 +152,15 @@ const toggleBurger = () => {
 
         <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isBurgerOpen }">
           <div class="navbar-start">
-            <RouterLink v-for="(item, i) in links" class="navbar-item" :to="item.path" :key="i" @click="isBurgerOpen = false">
+            <RouterLink
+              v-for="(item, i) in links.filter(
+                (e) => store.role === e.show || e.show === 'customer',
+              )"
+              class="navbar-item"
+              :to="item.path"
+              :key="i"
+              @click="isBurgerOpen = false"
+            >
               {{ item.name }}
             </RouterLink>
           </div>
@@ -140,26 +200,32 @@ const toggleBurger = () => {
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         :to="`/dashboard/wishList/${userId}`"
+                        @click="toggleDropdown"
                         ><i class="pi pi-list-check"></i>WishList</RouterLink
                       >
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         :to="`/dashboard/addressBook/${userId}`"
+                        @click="toggleDropdown"
                         ><i class="pi pi-building-columns"></i>Address Book</RouterLink
                       >
                       <RouterLink
+                        v-if="store.role === 'admin'"
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         to="/dashboard/users"
+                        @click="toggleDropdown"
                         ><i class="pi pi-users"></i>All Users</RouterLink
                       >
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         :to="`/users/my-orders/${userId}`"
+                        @click="toggleDropdown"
                         ><i class="pi pi-users"></i>My Orders</RouterLink
                       >
                       <RouterLink
                         class="dropdown-item is-flex is-justify-content-start is-align-items-center is-gap-1"
                         to="/dashboard/profile"
+                        @click="toggleDropdown"
                         ><i class="pi pi-user"></i> {{ t('profile') }}</RouterLink
                       >
                       <hr class="dropdown-divider" />
@@ -206,5 +272,10 @@ header {
 }
 header {
   z-index: unset;
+}
+.navbar-item img,
+.navbar-item svg {
+  max-height: 50px;
+  max-width: 180px;
 }
 </style>

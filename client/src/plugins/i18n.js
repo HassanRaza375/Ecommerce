@@ -1,32 +1,48 @@
 // src/i18n.js
 import { createI18n } from 'vue-i18n'
 
-// Define your translations
 const messages = {
   en: {
-    welcome: 'Welcome',
-    hello: 'Hello {name}!',
-    cancel: 'Cancel',
-    confirm: 'Confirm',
-    profile: 'Profile',
-    logout: 'Logout',
+    login: 'Login',
+    email: 'Email',
+    password: 'Password',
+    signup: 'Signup',
+    home: 'Home',
+    about: 'About',
+    search: 'Search',
     cart: 'Cart',
+    localization: 'Task Localization',
+    startShopping: 'Start Shopping',
+    myOrders: 'My Orders',
+    profile: 'Profile',
+    allUsers: 'All Users',
+    wishlist: 'Wishlist',
+    logout: 'Logout',
+    fillThese: 'Fill these fields',
   },
   fr: {
-    welcome: 'Bienvenue',
-    hello: 'Bonjour {name} !',
-    cancel: 'Annuler',
-    confirm: 'Confirmer',
+    login: 'Connexion',
+    email: 'Email',
+    password: 'Mot de passe',
+    signup: 'Inscription',
+    home: 'Accueil',
+    about: 'À propos',
+    search: 'Rechercher',
+    cart: 'Panier',
+    localization: 'Localisation',
+    startShopping: 'Commencer vos achats',
+    myOrders: 'Mes commandes',
     profile: 'Profil',
+    allUsers: 'Tous les utilisateurs',
+    wishlist: 'Liste de souhaits',
     logout: 'Se déconnecter',
-    cart: 'CartFR',
+    fillThese: 'Remplissez ces champs',
   },
 }
 
-// Create the i18n instance
 const i18n = createI18n({
-  legacy: false, // use Composition API
-  locale: 'en', // default language
+  legacy: false,
+  locale: 'en',
   fallbackLocale: 'en',
   messages,
 })
