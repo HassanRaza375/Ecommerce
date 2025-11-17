@@ -4,9 +4,11 @@ import { onMounted, ref } from 'vue'
 import { allusers, deleteById } from '../../services/authService'
 import { useRouter } from 'vue-router'
 import { useToasterStore } from '@/stores/toaster'
+import { Skeleton } from 'primevue'
 const toast = useToasterStore()
 const router = useRouter()
 const users = ref([])
+let loading = ref(true)
 onMounted(async () => {
   await getUsers()
 })
@@ -14,8 +16,14 @@ const goToProfile = (id) => {
   router.push(`/dashboard/profile/${id}`)
 }
 const getUsers = async () => {
-  const { data } = await allusers()
-  users.value = data.count > 0 ? data.rows : []
+  try{
+    const { data } = await allusers()
+    users.value = data.count > 0 ? data.rows : []
+    loading = false
+  }catch(error){
+    loading = false
+    toast.error('Failed to fetch users')
+  }
 }
 const deleteUser = async (userId) => {
   const { data } = await deleteById(userId)
@@ -35,7 +43,7 @@ const deleteUser = async (userId) => {
     >
       <div class="table-container">
         <div class="card">
-          <table class="table is-striped table is-hoverable table is-fullwidth">
+          <table class="table is-striped is-hoverable is-fullwidth">
             <thead>
               <tr>
                 <th width="10%">#Sr</th>
@@ -47,7 +55,12 @@ const deleteUser = async (userId) => {
               </tr>
             </thead>
             <tbody>
-              <tr v-if="users.length < 1">
+              <template v-if="loading">
+                <tr v-for="item in 5" :key="item">
+                  <td colspan="100%"><Skeleton class="mb-2" height="1rem"></Skeleton></td>
+                </tr>
+              </template>
+              <tr v-if="loading===false && users.length===0">
                 <td colspan="100%" align="center"><b>No Record Found</b></td>
               </tr>
               <tr v-else v-for="(user, i) in users" :key="i">

@@ -28,7 +28,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-if="users.length < 1">
+              <template v-if="loading">
+                <tr v-for="item in 5" :key="item">
+                  <td colspan="100%"><Skeleton class="mb-2" height="1rem"></Skeleton></td>
+                </tr>
+              </template>
+              <tr v-if="loading===false && users.length===0">
                 <td colspan="100%" align="center"><b>No Record Found</b></td>
               </tr>
               <tr v-else v-for="(user, i) in users" :key="i">
@@ -69,6 +74,10 @@ import { onMounted, ref } from 'vue'
 // deleteAddressById
 import { getUsersAdressesById } from '../../services/authService'
 import { useRouter } from 'vue-router'
+import { useToasterStore } from '@/stores/toaster'
+import { Skeleton } from 'primevue'
+const toast = useToasterStore()
+let loading = ref(true)
 const router = useRouter()
 const users = ref([])
 let userId = JSON.parse(localStorage.getItem('user')).id
@@ -79,8 +88,15 @@ const goToUrl = (id, action) => {
   router.push(`/dashboard/${action}/address/${id ? id : ''}`)
 }
 const getAddresses = async () => {
-  const { data } = await getUsersAdressesById(userId)
-  users.value = data.addresses.length > 0 ? data.addresses : []
+  try{
+    loading.value = true
+    const { data } = await getUsersAdressesById(userId)
+    users.value = data.addresses.length > 0 ? data.addresses : []
+    loading.value = false
+  }catch(err){
+    loading.value = false
+    toast.error('Error while fetching addresses')
+  }
 }
 </script>
 

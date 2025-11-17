@@ -2,7 +2,27 @@
   <div class="orders-page">
     <h1>My Orders</h1>
 
-    <div v-if="loading" class="loading">Loading your orders...</div>
+    <div v-if="loading" class="orders-list">
+  <div v-for="n in 3" :key="n" class="order-card skeleton-card">
+    <div class="order-header">
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-status"></div>
+    </div>
+
+    <div class="order-body">
+      <div class="skeleton skeleton-text"></div>
+      <div class="skeleton skeleton-text short"></div>
+
+      <div class="items-preview">
+        <div class="skeleton skeleton-item" v-for="i in 2" :key="i"></div>
+      </div>
+    </div>
+
+    <div class="order-footer">
+      <div class="skeleton skeleton-btn"></div>
+    </div>
+  </div>
+</div>
 
     <div v-else-if="orders.length === 0" class="empty">
       <p>You have no orders yet.</p>
@@ -107,6 +127,67 @@ const formatDate = (date) => {
 </script>
 
 <style scoped>
+/* Skeleton base */
+.skeleton {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 37%, #e0e0e0 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: 8px;
+}
+
+/* Keyframes */
+@keyframes skeleton-loading {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Card skeleton layout */
+.skeleton-card .order-header,
+.skeleton-card .order-body,
+.skeleton-card .order-footer {
+  pointer-events: none;
+}
+
+/* Title */
+.skeleton-title {
+  width: 160px;
+  height: 20px;
+}
+
+/* Status badge */
+.skeleton-status {
+  width: 80px;
+  height: 18px;
+  border-radius: 20px;
+}
+
+/* Text lines */
+.skeleton-text {
+  height: 16px;
+  width: 70%;
+  margin: 10px 0;
+}
+
+.skeleton-text.short {
+  width: 40%;
+}
+
+/* Items */
+.skeleton-item {
+  height: 50px;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+/* Button */
+.skeleton-btn {
+  height: 34px;
+  width: 120px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
 .orders-page {
   padding: 30px;
   max-width: 800px;

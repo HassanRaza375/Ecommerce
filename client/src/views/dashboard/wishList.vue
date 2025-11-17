@@ -11,11 +11,24 @@
     </div>
 
     <!-- Empty state -->
-    <div v-if="wishlist.length === 0" class="empty-state">
+    <div v-if="loading===false&&wishlist.length === 0" class="empty-state">
       <i class="pi pi-heart text-xl"></i>
       <p>Your wishlist is empty.</p>
     </div>
+    <div v-if="loading" class="wishlist-grid">
+      <div v-for="n in 6" :key="n" class="wishlist-card skeleton-card">
+        <div class="image-wrapper">
+          <div class="skeleton skeleton-image"></div>
+        </div>
 
+        <div class="info">
+          <div class="skeleton skeleton-text title"></div>
+          <div class="skeleton skeleton-text price"></div>
+          <div class="skeleton skeleton-text quantity"></div>
+          <div class="skeleton skeleton-btn"></div>
+        </div>
+      </div>
+    </div>
     <!-- Wishlist Grid -->
     <div v-else class="wishlist-grid">
       <div v-for="item in wishlist" :key="item.id" class="wishlist-card">
@@ -49,20 +62,22 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useToast } from 'primevue/usetoast'
 import { getWishList, deleteWishListById, clearWishList } from '@/services/wishList'
 import Button from 'primevue/button';
-
+import { useToasterStore } from '@/stores/toaster';
+let toast = useToasterStore();
 let userId = JSON.parse(localStorage.getItem('userId'))
-const toast = useToast()
 const wishlist = ref([])
-
+let loading = ref(true)
 const fetchWishlist = async () => {
   try {
+    loading.value = true
     const { data } = await getWishList(userId)
     wishlist.value = data
+    loading.value = false
   } catch (err) {
-    console.error(err)
+    loading.value = false
+    toast.error(err)
   }
 }
 
@@ -71,19 +86,9 @@ const removeItem = async (productId) => {
     const res = await deleteWishListById(userId, { productId })
     console.log(res)
     fetchWishlist()
-    toast.add({
-      severity: 'success',
-      summary: 'Removed Item removed from wishlist',
-      detail: 'Item removed from wishlist',
-      life: 2000,
-    })
+    toast.success("Item removed from wishlist")
   } catch (err) {
-    toast.add({
-      severity: 'error',
-      summary: `${err?.response?.data?.message} Removed`,
-      detail: 'Item removed from wishlist',
-      life: 2000,
-    })
+    toast.error("Item not removed")
   }
 }
 const clearWishListItem = async () => {
@@ -91,31 +96,13 @@ const clearWishListItem = async () => {
     const res = await clearWishList(userId)
     console.log(res)
     fetchWishlist()
-    toast.add({
-      severity: 'success',
-      summary: 'Wishlist Cleared',
-      detail: 'All items removed from wishlist',
-      life: 2000,
-    })
+       toast.success("Item removed from wishlist")
   } catch (err) {
-    toast.add({
-      severity: 'error',
-      summary: `${err?.response?.data?.message} Removed`,
-      detail: 'Failed to clear wishlist',
-      life: 2000,
-    })
+    toast.error("Item not removed")
   }
 }
 const addToCart = (item) => {
-  // your cart store logic
-  // cartStore.addItem(item);
-
-  toast.add({
-    severity: 'info',
-    summary: 'Added to Cart',
-    detail: `${item.name} added to cart`,
-    life: 2000,
-  })
+  toast.success(`${item.name} added to cart`)
 }
 
 onMounted(async () => {
