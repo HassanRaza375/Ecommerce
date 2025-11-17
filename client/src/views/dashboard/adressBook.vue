@@ -67,10 +67,11 @@
 import moment from 'moment'
 import { onMounted, ref } from 'vue'
 // deleteAddressById
-import { getAllUsersAdresses } from '../../services/authService'
+import { getUsersAdressesById } from '../../services/authService'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const users = ref([])
+let userId = JSON.parse(localStorage.getItem('user')).id
 onMounted(async () => {
   await getAddresses()
 })
@@ -78,7 +79,7 @@ const goToUrl = (id, action) => {
   router.push(`/dashboard/${action}/address/${id ? id : ''}`)
 }
 const getAddresses = async () => {
-  const { data } = await getAllUsersAdresses()
+  const { data } = await getUsersAdressesById(userId)
   users.value = data.addresses.length > 0 ? data.addresses : []
 }
 </script>
