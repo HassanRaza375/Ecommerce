@@ -141,18 +141,39 @@ const router = createRouter({
       component: () => import('../views/user/order/thankYou.vue'),
       meta: { requiresAuth: true }, // Protected
     },
+    {
+      path: '/admin',
+      component: () => import('../components/layout/AdminLayout.vue'), // <<–– Admin layout used here
+      meta: { requiresAuth: true, requiresAdmin: true },
+      children: [
+        { path: '', component: () => import('../views/admin/adminDashboard.vue') },
+        { path: 'products', component: () => import('../views/admin/adminProducts.vue') },
+        // add more...
+      ],
+    },
   ],
 })
 
 //  Navigation Guard
 router.beforeEach((to, from, next) => {
   const isLoggedIn = AuthService.isAuthenticated()
+  const user = AuthService.getUser() // contains { id, role, ... }
 
+  // 1. Check if login is required
   if (to.meta.requiresAuth && !isLoggedIn) {
-    next({ name: 'Login' }) // Redirect to login if not authenticated
-  } else {
-    next() // Proceed to route
+    return next({ name: 'Login' })
   }
+
+  // 2. Check admin routes
+  if (to.meta.requiresAdmin) {
+    if (!isLoggedIn) return next({ name: 'Login' }) // not logged in
+
+    if (user.role !== 'admin') {
+      return next({ name: 'Home' }) // redirect normal users
+    }
+  }
+
+  next()
 })
 
 export default router

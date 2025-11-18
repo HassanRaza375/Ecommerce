@@ -3,15 +3,15 @@
     <!-- Header -->
     <div class="wishlist-header">
       <h1 class="title">WishList</h1>
-         <div class="card">
-      <div class="is-flex is-align-items-center is-justify-content-space-between">
-        <Button label="Clear Wishlist" severity="danger" @click="clearWishListItem" />
+      <div class="card">
+        <div class="is-flex is-align-items-center is-justify-content-space-between">
+          <Button label="Clear Wishlist" severity="danger" @click="clearWishListItem" />
+        </div>
       </div>
-    </div>
     </div>
 
     <!-- Empty state -->
-    <div v-if="loading===false&&wishlist.length === 0" class="empty-state">
+    <div v-if="loading === false && wishlist.length === 0" class="empty-state">
       <i class="pi pi-heart text-xl"></i>
       <p>Your wishlist is empty.</p>
     </div>
@@ -63,9 +63,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getWishList, deleteWishListById, clearWishList } from '@/services/wishList'
-import Button from 'primevue/button';
-import { useToasterStore } from '@/stores/toaster';
-let toast = useToasterStore();
+import Button from 'primevue/button'
+import { useToasterStore } from '@/stores/toaster'
+let toast = useToasterStore()
 let userId = JSON.parse(localStorage.getItem('userId'))
 const wishlist = ref([])
 let loading = ref(true)
@@ -86,9 +86,9 @@ const removeItem = async (productId) => {
     const res = await deleteWishListById(userId, { productId })
     console.log(res)
     fetchWishlist()
-    toast.success("Item removed from wishlist")
+    toast.success('Item removed from wishlist')
   } catch (err) {
-    toast.error("Item not removed")
+    toast.error(`${err}`)
   }
 }
 const clearWishListItem = async () => {
@@ -96,9 +96,9 @@ const clearWishListItem = async () => {
     const res = await clearWishList(userId)
     console.log(res)
     fetchWishlist()
-       toast.success("Item removed from wishlist")
+    toast.success('Item removed from wishlist')
   } catch (err) {
-    toast.error("Item not removed")
+    toast.error(`${err}`)
   }
 }
 const addToCart = (item) => {

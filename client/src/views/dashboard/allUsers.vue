@@ -16,13 +16,13 @@ const goToProfile = (id) => {
   router.push(`/dashboard/profile/${id}`)
 }
 const getUsers = async () => {
-  try{
+  try {
     const { data } = await allusers()
     users.value = data.count > 0 ? data.rows : []
-    loading = false
-  }catch(error){
-    loading = false
-    toast.error('Failed to fetch users')
+    loading.value = false
+  } catch (error) {
+    loading.value = false
+    toast.error(`error ${error}`)
   }
 }
 const deleteUser = async (userId) => {
@@ -60,7 +60,7 @@ const deleteUser = async (userId) => {
                   <td colspan="100%"><Skeleton class="mb-2" height="1rem"></Skeleton></td>
                 </tr>
               </template>
-              <tr v-if="loading===false && users.length===0">
+              <tr v-if="loading === false && users.length === 0">
                 <td colspan="100%" align="center"><b>No Record Found</b></td>
               </tr>
               <tr v-else v-for="(user, i) in users" :key="i">

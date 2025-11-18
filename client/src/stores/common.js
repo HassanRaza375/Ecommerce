@@ -4,8 +4,8 @@ export const useCommonStore = defineStore('common', {
   state: () => ({
     isLoggedIn: localStorage.getItem('token') ? true : false,
     wishListIds: JSON.parse(localStorage.getItem('wishListIds') || '[]'),
-    role: 'customer',
-    user: null,
+    role: JSON.parse(localStorage.getItem('user'))?.role || 'customer',
+    user: JSON.parse(localStorage.getItem('user') || '{}'),
   }),
 
   actions: {
