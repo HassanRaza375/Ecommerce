@@ -11,6 +11,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import ToastService from 'primevue/toastservice';
 import 'primeicons/primeicons.css'
+import 'primeflex/primeflex.css';
 
 const app = createApp(App)
 
