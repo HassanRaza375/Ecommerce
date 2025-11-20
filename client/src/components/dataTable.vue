@@ -1,6 +1,6 @@
 <!-- components/CommonDataTable.vue -->
 <template>
-  <div>
+  <div style="overflow-x: auto">
     <!-- 🔍 Search & Add -->
     <div class="mb-3 flex justify-between items-center gap-2">
       <InputText v-model="internalFilters.global.value" placeholder="Search..." class="w-64" />

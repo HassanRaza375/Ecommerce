@@ -35,7 +35,6 @@ const tableColumns = [
 onMounted(async () => {
   loading.value = true
   const { data } = await getUserOrders()
-  debugger
   users.value = data
   loading.value = false
 })

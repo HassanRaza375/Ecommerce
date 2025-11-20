@@ -8,3 +8,6 @@ body {
 .container {
   padding-inline: 1rem;
 }
+.p-datatable-column-title {
+  white-space: nowrap;
+}
