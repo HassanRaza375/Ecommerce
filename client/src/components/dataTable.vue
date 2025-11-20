@@ -25,22 +25,29 @@
       :sortField="sortField"
       :sortOrder="sortOrder"
       @sort="onSort"
+      scrollable
+      scrollHeight="400px"
       responsiveLayout="scroll"
       class="shadow-md"
     >
       <!-- 🟩 Dynamic Columns -->
-        <Column
-          v-for="col in columns" :key="col.field"
-          :field="col.field"
-          :header="col.header"
-          :sortable="col.sortable !== false"
-          :style="col.style"
-        />
+      <Column
+        v-for="col in columns"
+        :key="col.field"
+        :field="col.field"
+        :header="col.header"
+        :sortable="col.sortable !== false"
+        :style="col.style"
+      />
 
       <!-- 🔥 Actions Column -->
       <Column header="Actions" style="width: 140px" v-if="showActions">
         <template #body="{ data }">
-          <Button icon="pi pi-pencil" class="p-button-text p-button-sm" @click="$emit('edit', data)" />
+          <Button
+            icon="pi pi-pencil"
+            class="p-button-text p-button-sm"
+            @click="$emit('edit', data)"
+          />
           <Button
             icon="pi pi-trash"
             class="p-button-text p-button-danger p-button-sm"
@@ -60,8 +67,8 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 
 const props = defineProps({
-  value: Array,        // table data
-  columns: Array,      // column definitions
+  value: Array, // table data
+  columns: Array, // column definitions
   loading: Boolean,
 
   // UI options
