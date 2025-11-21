@@ -1,8 +1,8 @@
 <template>
-  <div class="about-page p-4">
+  <div class="about-page container">
     <!-- Hero Section -->
     <section
-      class="hero-section flex flex-column md:flex-row justify-content-between align-items-center"
+      class="hero-section flex flex-column justify-content-between"
       v-scroll-reveal
     >
       <div class="text-section">
@@ -19,7 +19,7 @@
 
     <!-- Stats Section -->
     <section class="stats-section grid mt-6" v-scroll-reveal>
-      <div class="col-12 md:col-4" v-for="stat in stats" :key="stat.label">
+      <div class="col-12 md:col-3" v-for="stat in stats" :key="stat.label">
         <Card class="stat-card text-center">
           <h2 class="stat-number">{{ stat.number }}</h2>
           <p class="stat-label">{{ stat.label }}</p>
@@ -32,7 +32,7 @@
       <h2 class="section-title">Meet the Team</h2>
 
       <div class="grid mt-3">
-        <div class="col-12 md:col-4" v-for="member in team" :key="member.name">
+        <div class="col-12 md:col-3" v-for="member in team" :key="member.name">
           <Card class="team-card text-center hover-zoom">
             <Avatar :image="member.photo" size="xlarge" shape="circle" />
             <h3 class="mt-2">{{ member.name }}</h3>

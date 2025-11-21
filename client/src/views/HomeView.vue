@@ -134,11 +134,13 @@ onBeforeUnmount(() => {
 .hero-content h1 {
   font-size: 3rem;
   margin-bottom: 10px;
+  font-weight: 500;
 }
 
 .hero-content p {
   font-size: 1.2rem;
   margin-bottom: 20px;
+  font-weight: 500;
 }
 
 .btn.shop {
@@ -147,6 +149,7 @@ onBeforeUnmount(() => {
   border: none;
   border-radius: 6px;
   font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
   color: #000;
 }

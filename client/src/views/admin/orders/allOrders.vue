@@ -15,6 +15,8 @@
 import { ref, onMounted } from 'vue'
 import CommonDataTable from '@/components/dataTable.vue'
 import { getUserOrders } from '@/services/orderService.js'
+import { useToasterStore } from '@/stores/toaster'
+const toast = useToasterStore()
 const users = ref([])
 const loading = ref(false)
 
@@ -33,10 +35,17 @@ const tableColumns = [
 ]
 
 onMounted(async () => {
-  loading.value = true
-  const { data } = await getUserOrders()
-  users.value = data
-  loading.value = false
+  try {
+    loading.value = true
+    const { data } = await getUserOrders()
+    users.value = data
+    loading.value = false
+    toast.success('Orders loaded successfully')
+  } catch (err) {
+    toast.error(err)
+    loading.value = false
+    toast.error('Failed to load orders')
+  }
 })
 
 // actions

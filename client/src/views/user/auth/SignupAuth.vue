@@ -5,7 +5,7 @@ import SignUpForm from '@/components/auth/SignUpForm.vue'
   <div class="bg">
     <div class="container">
       <div class="grid">
-        <div class="cell">
+        <div class="cell w-full">
           <SignUpForm />
         </div>
       </div>

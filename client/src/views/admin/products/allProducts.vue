@@ -12,30 +12,37 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import CommonDataTable from '@/components/dataTable.vue'
-
+import { getProducts } from '@/services/productService'
+import { useToasterStore } from '@/stores/toaster'
+const toast = useToasterStore()
 const users = ref([])
 const loading = ref(false)
-
+// id, name, description, price, stock, category, image_url, created_at
 const userColumns = [
   { field: 'id', header: 'ID', style: 'width: 80px' },
   { field: 'name', header: 'Name' },
-  { field: 'email', header: 'Emails' },
+  { field: 'price', header: 'Price' },
+  { field: 'stock', header: 'Stock' },
+  { field: 'category', header: 'Category' },
+  { field: 'image_url', header: 'Image' },
+  { field: 'created_at', header: 'Created At' },
 ]
 
-onMounted(() => {
-  loading.value = true
-  setTimeout(() => {
-    users.value = [
-      { id: 1, name: 'John Doe', email: 'john@gmail.com' },
-      { id: 2, name: 'Sarah Parker', email: 'sarah@example.com' },
-      { id: 3, name: 'Mike Johnson', email: 'mike@mail.com' },
-    ]
+onMounted(async () => {
+  try{
+    loading.value = true
+    const { data } = await getProducts()
+    users.value = data
     loading.value = false
-  }, 700)
+    toast.success('Products loaded successfully')
+  }catch(err){
+    toast.error(err)
+    loading.value = false
+  }
 })
 
 // actions
-const onAdd = () => console.log("Add User")
-const onEdit = (row) => console.log("Edit:", row)
-const onDelete = (row) => console.log("Delete:", row)
+const onAdd = () => console.log('Add User')
+const onEdit = (row) => console.log('Edit:', row)
+const onDelete = (row) => console.log('Delete:', row)
 </script>
