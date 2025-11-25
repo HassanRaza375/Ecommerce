@@ -2,11 +2,15 @@
 <template>
   <div style="overflow-x: auto">
     <!-- 🔍 Search & Add -->
-    <div class="mb-3 flex justify-between items-center gap-2">
-      <InputText v-model="internalFilters.global.value" placeholder="Search..." class="w-64" />
+    <div class="mb-3 flex justify-content-end items-center gap-2">
+      <InputText
+        v-model="internalFilters.global.value"
+        placeholder="Search..."
+        style="width: 30%"
+      />
 
       <Button
-        v-if="showAdd"
+        v-if="props.showAdd"
         label="Add New"
         icon="pi pi-plus"
         class="p-button-primary"
@@ -16,12 +20,12 @@
 
     <!-- 🔷 Reusable DataTable -->
     <DataTable
-      :value="value"
+      :value="props.value"
       :paginator="true"
-      :rows="rows"
+      :rows="props.rows"
       :filters="internalFilters"
-      :loading="loading"
-      :rowsPerPageOptions="rowsPerPageOptions"
+      :loading="props.loading"
+      :rowsPerPageOptions="props.rowsPerPageOptions"
       :sortField="sortField"
       :sortOrder="sortOrder"
       @sort="onSort"
@@ -41,7 +45,7 @@
       />
 
       <!-- 🔥 Actions Column -->
-      <Column header="Actions" style="width: 140px" v-if="showActions">
+      <Column header="Actions" style="width: 140px" v-if="props.showActions">
         <template #body="{ data }">
           <Button
             icon="pi pi-pencil"
@@ -60,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
@@ -78,6 +82,7 @@ const props = defineProps({
   // Actions
   showActions: { type: Boolean, default: true },
   showAdd: { type: Boolean, default: true },
+  url: { type: String, default: '' },
 })
 
 // Sorting
