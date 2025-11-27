@@ -23,6 +23,7 @@ export const useCommonStore = defineStore('common', {
       this.user = null
       this.role = 'customer'
       this.wishListIds = []
+      window.location.reload()
     },
 
     addWishListId(ids) {

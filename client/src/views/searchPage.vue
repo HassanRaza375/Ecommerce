@@ -6,16 +6,11 @@
 
     <div class="filters">
       <InputText v-model="filters.query" placeholder="Search for products" />
-
       <Dropdown
-        v-model="filters.category"
-        :options="
-          categories.map((e) => {
-            return { category: capitalize(e.category), acutalValue: e.category }
-          })
-        "
-        optionValue="acutalValue"
-        optionLabel="category"
+        v-model="filters.category_id"
+        :options="categories"
+        optionValue="id"
+        optionLabel="caps_name"
         placeholder="Select Category"
       />
 
@@ -53,7 +48,7 @@
       <Button label="Reset" @click="RestSearch" />
     </div>
 
-    <ProductCard :data="productData" :is_loading="is_loading"/>
+    <ProductCard :data="productData" :is_loading="is_loading" />
   </div>
 </template>
 
@@ -81,7 +76,7 @@ const ProductCard = defineAsyncComponent({
 let restBool = ref(false)
 const filters = ref({
   query: null,
-  category: null,
+  category_id: null,
   min_price: null,
   max_price: null,
   min_stock: null,
@@ -100,7 +95,14 @@ let is_loading = ref(false)
 // Methods
 async function searchProductQuery() {
   try {
-    if(filters.value.query === null && filters.value.category === null && filters.value.min_price === null && filters.value.max_price === null && filters.value.min_stock === null && filters.value.max_stock === null){
+    if (
+      filters.value.query === null &&
+      filters.value.category_id === null &&
+      filters.value.min_price === null &&
+      filters.value.max_price === null &&
+      filters.value.min_stock === null &&
+      filters.value.max_stock === null
+    ) {
       useToast.error('Please fill at least one field.')
     }
     const { data } = await searchProducts({ params: filters.value })
@@ -140,13 +142,21 @@ const getProductData = (data) => {
   productData.value = filteredProducts
 }
 const getAllCatgories = async () => {
-  const { data } = await getProductsCategories()
-  categories.value = data
+  try {
+    is_loading.value = true
+    const { data } = await getProductsCategories()
+    categories.value = data.map((e) => ({ ...e, caps_name: capitalize(e.name) }))
+    is_loading.value = false
+    useToast.success('Categories Fetched Successfully')
+  } catch (err) {
+    useToast.error(err)
+    is_loading.value = false
+  }
 }
 const RestSearch = () => {
   filters.value = {
     query: null,
-    category: null,
+    category_id: null,
     min_price: null,
     max_price: null,
     min_stock: null,
@@ -163,7 +173,7 @@ const RestSearch = () => {
 function buildFiltersFromQuery(query) {
   return {
     query: query.query || null,
-    category: query.category || null,
+    category_id: query.category_id || null,
     min_price: query.min_price ? Number(query.min_price) : 0,
     max_price: query.max_price ? Number(query.max_price) : null,
     min_stock: query.min_stock ? Number(query.min_stock) : 1,

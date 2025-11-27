@@ -33,3 +33,17 @@
 #  });
 # module.exports = pool;
 
+<!-- Username
+ecommerce_version_1_user
+
+Password
+PEr98lzX6GD61lXp5EWgXGZA9jtzhOtW
+
+Host
+dpg-d4bc8rur433s7399bk2g-a.oregon-postgres.render.com
+
+Port
+5432
+
+Database name
+ecommerce_version_1 -->

@@ -42,11 +42,21 @@
         <div class="grid-form">
           <div class="grid-item span-2">
             <label for="categoryName">Category Name</label>
-            <InputText id="categoryName" v-model="Item.category_name" type="text" />
+            <InputText id="categoryName" v-model="Item.name" type="text" />
           </div>
           <div class="grid-item span-2">
             <label for="categoryName">Category Name</label>
-            <Textarea id="categoryName" v-model="Item.description" rows="5" />
+            <Dropdown
+              v-model="Item.parent_id"
+              :options="categories"
+              optionValue="id"
+              optionLabel="name"
+              placeholder="Select Category"
+            />
+          </div>
+          <div class="grid-item span-2">
+            <label for="categoryName">Category Name</label>
+            <Textarea id="categoryName" v-model="Item.slug" rows="5" />
           </div>
         </div>
         <template #footer>
@@ -67,6 +77,8 @@ import { useToasterStore } from '@/stores/toaster'
 import { createProductCategory, getProductsCategories } from '@/services/productService'
 import CommonDataTable from '@/components/dataTable.vue'
 import Dialog from 'primevue/dialog'
+import Dropdown from 'primevue/dropdown'
+import { capitalize } from '@/utils/capitalize'
 
 let categories = ref([])
 let toast = useToasterStore()
@@ -75,19 +87,22 @@ let visible = ref(false)
 
 const categoryColumns = [
   { field: 'id', header: 'ID', style: 'width: 80px' },
-  { field: 'category', header: 'Category' },
+  { field: 'name', header: 'Category' },
+  { field: 'parent_id', header: 'Parent ID' },
+  { field: 'slug', header: 'Slug' },
 ]
 let url = ref('/admin/products/add')
 
 let Item = reactive({
-  category_name: '',
-  description: '',
+  name: '',
+  slug: '',
+  parent_id: null,
 })
 
 const submitCategory = async () => {
   try {
     loading.value = true
-    if (!Item.category_name) {
+    if (!Item.name) {
       toast.error('Please fill field.')
       loading.value = false
       return
@@ -95,10 +110,12 @@ const submitCategory = async () => {
     console.log('Category Data:', Item)
     const { data } = await createProductCategory(Item)
     console.log(data)
-    Item.category_name = ''
-    Item.description = ''
+    Item.name = ''
+    Item.slug = ''
+    Item.parent_id = null
     loading.value = false
     toast.success('Category added successfully.')
+    await getAllCatgories()
   } catch (error) {
     toast.error(error)
     loading.value = false
@@ -108,7 +125,7 @@ const getAllCatgories = async () => {
   try {
     loading.value = true
     const { data } = await getProductsCategories()
-    categories.value = data
+    categories.value = data.map((e) => ({ ...e, name: capitalize(e.name) }))
     loading.value = false
   } catch (error) {
     toast.error(error)
