@@ -60,7 +60,12 @@
           </div>
         </div>
         <template #footer>
-          <Button label="Save" icon="pi pi-check" :loading="loading" @click="submitCategory" />
+          <Button
+            label="Save"
+            icon="pi pi-check"
+            :loading="loading"
+            @click="Item.id ? onEdit(Item, true) : submitCategory"
+          />
         </template>
       </Dialog>
     </div>
@@ -74,7 +79,12 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import { useToasterStore } from '@/stores/toaster'
-import { createProductCategory, getProductsCategories } from '@/services/productService'
+import {
+  createProductCategory,
+  getProductsCategories,
+  deleteProductCategory,
+  editProductCategory,
+} from '@/services/productService'
 import CommonDataTable from '@/components/dataTable.vue'
 import Dialog from 'primevue/dialog'
 import Dropdown from 'primevue/dropdown'
@@ -97,6 +107,7 @@ let Item = reactive({
   name: '',
   slug: '',
   parent_id: null,
+  id: null,
 })
 
 const submitCategory = async () => {
@@ -134,11 +145,48 @@ const getAllCatgories = async () => {
 const onAdd = () => {
   console.log('Add new category')
 }
-const onEdit = (row) => {
-  console.log('Edit:', row)
+const onEdit = async (row, bool) => {
+  try {
+    if (bool) {
+      loading.value = true
+      const obj = {
+        name: row.name,
+        slug: row.slug,
+        parent_id: row.parent_id,
+      }
+      const { data } = await editProductCategory(row.id, obj)
+      Item.name = ''
+      Item.slug = ''
+      Item.parent_id = null
+      Item.id = null
+      console.log(data)
+      await getAllCatgories()
+      loading.value = false
+      visible.value = false
+    } else {
+      loading.value = true
+      visible.value = true
+      Item.name = row.name
+      Item.slug = row.slug
+      Item.parent_id = row.parent_id
+      Item.id = row.id
+      loading.value = false
+    }
+  } catch (err) {
+    toast.error(err)
+    loading.value = false
+  }
 }
-const onDelete = (row) => {
-  console.log('Delete:', row)
+const onDelete = async (row) => {
+  try {
+    const { data } = await deleteProductCategory(row.id)
+    if (data.message === 'category deleted') {
+      toast.success('Category deleted successfully.')
+      await getAllCatgories()
+    }
+  } catch (err) {
+    toast.error(err)
+  }
 }
 onMounted(async () => {
   await getAllCatgories()

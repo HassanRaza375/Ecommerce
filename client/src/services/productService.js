@@ -9,9 +9,10 @@ export const deleteProduct = (id) => api.delete(`/products/${id}`)
 export const getFeaturedProducts = () => api.get('/products/featured/all')
 
 export const getProductsCategories = () => api.get('/products/all/categories')
+
 export const createProductCategory = (data) => api.post('/products/categories/', data)
-export const deleteProductCategory = (id) => api.delete(`/products/categories/${id}`)
-export const editProductCategory = (id, data) => api.put(`/products/categories/${id}`, data)
+export const deleteProductCategory = (id) => api.delete(`/products/category/remove/${id}`)
+export const editProductCategory = (id, data) => api.put(`/products/category/edit/${id}`, data)
 
 export const uploadProductImage = (data) => api.post('/upload/image', data)
 export const deleteProductImage = (data) => api.post('/upload/delete/image', data)
