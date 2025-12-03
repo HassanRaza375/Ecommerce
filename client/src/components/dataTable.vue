@@ -42,7 +42,12 @@
         :header="col.header"
         :sortable="col.sortable !== false"
         :style="col.style"
-      />
+      >
+        <!-- ⭐ Custom Image Cell -->
+        <template v-if="col.field === 'image_url'" #body="{ data }">
+          <Image :src="data.image_url" alt="Image" width="100" preview />
+        </template>
+      </Column>
 
       <!-- 🔥 Actions Column -->
       <Column header="Actions" style="width: 140px" v-if="props.showActions">
@@ -69,6 +74,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import Image from 'primevue/image'
 
 const props = defineProps({
   value: Array, // table data

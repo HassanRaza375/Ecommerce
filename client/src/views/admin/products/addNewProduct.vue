@@ -39,27 +39,24 @@
               <label for="category">Category</label>
               <Dropdown
                 v-model="Item.category"
-                :options="
-                  categories.map((e) => {
-                    return { category: capitalize(e.category), acutalValue: e.category }
-                  })
-                "
-                optionValue="acutalValue"
-                optionLabel="category"
+                :options="categories"
+                optionValue="id"
+                optionLabel="name"
                 placeholder="Select Category"
               />
             </div>
             <div class="grid-item">
               <label for="Img_url">Image URL</label>
-              <InputText id="Img_url" v-model="Item.Img_url" />
+              <InputText id="Img_url" v-model="Item.Img_url" disabled />
             </div>
             <div class="grid-item">
               <label for="Img_url">Image URL</label>
               <FileUpload
                 mode="basic"
                 @select="onFileSelect"
-                customUpload
-                auto
+                :customUpload="true"
+                :auto="true"
+                @upload="UploadImage"
                 severity="secondary"
                 class="p-button-outlined"
               />
@@ -86,12 +83,12 @@ import Image from 'primevue/image'
 import Textarea from 'primevue/textarea'
 import FileUpload from 'primevue/fileupload'
 import { useToasterStore } from '@/stores/toaster'
-import { createProduct, getProductsCategories } from '@/services/productService'
-import { capitalize } from '@/utils/capitalize'
+import { createProduct, getProductsCategories, uploadProductImage } from '@/services/productService'
 let categories = ref([])
 let toast = useToasterStore()
 let loading = ref(false)
 let src = ref(null)
+const image = ref(null)
 
 let Item = reactive({
   name: '',
@@ -101,34 +98,36 @@ let Item = reactive({
   category: '',
   Img_url: '',
 })
-
-function onFileSelect(event) {
+// When user selects file
+const onFileSelect = async (event) => {
   const file = event.files[0]
+  image.value = file // store file for upload
+
   const reader = new FileReader()
-
-  reader.onload = async (e) => {
-    src.value = e.target.result
+  reader.onload = (e) => {
+    src.value = e.target.result // preview
   }
-
   reader.readAsDataURL(file)
+  Item.Img_url = await UploadImage()
 }
 const submitProduct = async () => {
   try {
     loading.value = true
+    console.log(Item)
     if (
-      !Item.value.name ||
-      !Item.value.description ||
-      !Item.value.price ||
-      !Item.value.stock ||
-      !Item.value.category ||
-      !Item.value.Img_url
+      !Item.name ||
+      !Item.description ||
+      !Item.price ||
+      !Item.stock ||
+      !Item.category ||
+      !Item.Img_url
     ) {
       toast.error('Please fill all the fields.')
       loading.value = false
       return
     }
-    console.log('Product Data:', Item.value)
-    const { data } = await createProduct(Item.value)
+    console.log('Product Data:', Item)
+    const { data } = await createProduct(Item)
     console.log(data)
     loading.value = false
     toast.error('Product added successfully.')
@@ -137,29 +136,34 @@ const submitProduct = async () => {
     loading.value = false
   }
 }
-// const UploadImage = async () => {
-//   const formData = new FormData();
-//   formData.append("image", image);
-//   if (!image) return null;
-//   for (let pair of formData.entries()) {
-//     console.log(pair[0], pair[1]); // Should log: "image", <File object>
-//   }
-//   const res = await axiosInstance.filePost(`uploads/file`, formData);
-//   if (res.status === 200) {
-//     toast.success(res.data.message);
-//     return res.data.url;
-//   } else {
-//     toast.error(res);
-//   }
-// };
-//   const handleImageChange = (event) => {
-//   const file = event.target.files[0];
-//   if (file) {
-//     setImage(file);
-//     // Generate a preview URL for the selected image
-//     setPreview(URL.createObjectURL(file));
-//   }
-// };
+// Upload function
+const UploadImage = async () => {
+  if (!image.value) {
+    toast.error('No image selected')
+    return null
+  }
+
+  const formData = new FormData()
+  formData.append('image', image.value)
+
+  // Debug log
+  for (let pair of formData.entries()) {
+    console.log(pair[0], pair[1])
+  }
+
+  try {
+    const res = await uploadProductImage(formData)
+    if (res.status === 200) {
+      toast.success(res.data.message)
+      return res.data.url
+    } else {
+      toast.error('Upload failed')
+    }
+  } catch (err) {
+    console.error(err)
+    toast.error('Upload error')
+  }
+}
 const getAllCatgories = async () => {
   const { data } = await getProductsCategories()
   categories.value = data
