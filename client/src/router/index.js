@@ -191,6 +191,11 @@ const router = createRouter({
           name: 'DynmaicComponent',
           component: () => import('../views/dynamicComponent.vue'),
         },
+        {
+          path: '/admin/settings/taxes',
+          name: 'Tax',
+          component: () => import('../views/admin/settings/taxSetting.vue'),
+        },
         // add more...
       ],
     },
