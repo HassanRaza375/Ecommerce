@@ -17,17 +17,29 @@ const createProduct = async (
   );
   return result.rows[0];
 };
+const createProductCategory = async (name, slug, parent_id) => {
+  const result = await pool.query(
+    `INSERT INTO categories (name, slug, parent_id) 
+     VALUES ($1, $2, $3) 
+     RETURNING *`,
+    [name, slug, parent_id]
+  );
+  return result.rows[0];
+};
 
 const getAllProducts = async () => {
   const result = await pool.query(
-    "SELECT * FROM products ORDER BY created_at DESC"
+    "SELECT pd.id, pd.name, pd.description, pd.price, pd.stock, ct.name as category, pd.image_url, pd.created_at FROM products as pd left join categories as ct on pd.category_id = ct.id ORDER BY created_at DESC"
   );
   if (result.rows.length === 0) return [];
   return result.rows;
 };
 
 const getProductById = async (id) => {
-  const result = await pool.query("SELECT * FROM products WHERE id = $1", [id]);
+  const result = await pool.query(
+    "SELECT id, name, description, price, stock, category, image_url, created_at FROM products WHERE id = $1",
+    [id]
+  );
   return result.rows[0];
 };
 
@@ -58,7 +70,7 @@ const deleteProduct = async (id) => {
 const search = async (filters) => {
   const {
     query,
-    category,
+    category_id,
     min_price,
     max_price,
     min_stock,
@@ -81,9 +93,9 @@ const search = async (filters) => {
     i++;
   }
 
-  if (category) {
-    where.push(`category = $${i}`);
-    params.push(category);
+  if (category_id) {
+    where.push(`category_id = $${i}`);
+    params.push(category_id);
     i++;
   }
 
@@ -119,14 +131,39 @@ const search = async (filters) => {
     ORDER BY ${sort_by} ${sort_order} ${limit ?? `LIMIT ${limit}`}
     OFFSET ${offset}
   `;
+  console.log(sql);
+  console.log(params);
   const result = await pool.query(sql, params);
   return result.rows;
 };
 const getAllCategories = async () => {
   const result = await pool.query(
-    "SELECT MIN(id) AS id, category FROM products GROUP BY category"
+    "SELECT id,name,slug,parent_id,created_at,updated_at FROM categories"
   );
   return result.rows;
+};
+const deleteCategory = async (id) => {
+  const result = await pool.query(
+    "DELETE FROM categories WHERE id = $1 RETURNING *",
+    [id]
+  );
+  return result.rows[0];
+};
+const updateCategory = async (id, fields) => {
+  const keys = Object.keys(fields);
+  const values = Object.values(fields);
+
+  if (keys.length === 0) return null;
+
+  const setClause = keys
+    .map((key, index) => `${key} = $${index + 1}`)
+    .join(", ");
+  const query = `UPDATE categories SET ${setClause} WHERE id = $${
+    keys.length + 1
+  } RETURNING *`;
+
+  const result = await pool.query(query, [...values, id]);
+  return result.rows[0];
 };
 module.exports = {
   createProduct,
@@ -136,4 +173,7 @@ module.exports = {
   deleteProduct,
   search,
   getAllCategories,
+  createProductCategory,
+  deleteCategory,
+  updateCategory,
 };

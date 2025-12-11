@@ -7,6 +7,9 @@ const {
   deleteProduct,
   getAllCategories,
   search,
+  createProductCategory,
+  deleteCategory,
+  updateCategory,
 } = require("../models/productModel");
 
 const addProduct = async (req, res) => {
@@ -21,6 +24,15 @@ const addProduct = async (req, res) => {
       image_url
     );
     res.status(201).json(product);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const addCategory = async (req, res) => {
+  try {
+    const { name, slug, parent_id } = req.body;
+    const category = await createProductCategory(name, slug, parent_id);
+    res.status(201).json(category);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -86,6 +98,25 @@ const fetchAllCategories = async (req, res) => {
     res.status(500).json({ error: err });
   }
 };
+const removeCategory = async (req, res) => {
+  try {
+    const category = await deleteCategory(req.params.id);
+    if (!category)
+      return res.status(404).json({ message: "category not found" });
+    res.json({ message: "category deleted", category });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+const editCategory = async (req, res) => {
+  try {
+    const category = await updateCategory(req.params.id, req.body);
+    if (!category) return res.status(404).json({ message: "category not found" });
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   addProduct,
   fetchProducts,
@@ -94,4 +125,7 @@ module.exports = {
   removeProduct,
   searchProducts,
   fetchAllCategories,
+  addCategory,
+  removeCategory,
+  editCategory,
 };

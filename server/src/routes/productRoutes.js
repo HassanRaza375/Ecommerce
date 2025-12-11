@@ -8,6 +8,9 @@ const {
   removeProduct,
   searchProducts,
   fetchAllCategories,
+  addCategory,
+  removeCategory,
+  editCategory,
 } = require("../controllers/productController");
 const {
   authMiddleware,
@@ -20,6 +23,14 @@ const router = express.Router();
 router.post("/", authMiddleware, authorizeRoles("admin"), addProduct);
 router.put("/:id", authMiddleware, authorizeRoles("admin"), editProduct);
 router.delete("/:id", authMiddleware, authorizeRoles("admin"), removeProduct);
+router.delete("/category/remove/:id", authMiddleware, authorizeRoles("admin"), removeCategory);
+router.put("/category/edit/:id", authMiddleware, authorizeRoles("admin"), editCategory);
+router.post(
+  "/categories",
+  authMiddleware,
+  authorizeRoles("admin"),
+  addCategory
+);
 
 // Public routes
 router.get("/", fetchProducts);
